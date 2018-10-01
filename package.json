@@ -1,0 +1,31 @@
+{
+	"name": "@sheetbase/drive-server",
+	"type": "module",
+	"version": "0.0.1",
+	"description": "File management with Drive for Sheetbase backend app.",
+	"author": "Sheetbase",
+	"homepage": "https://sheetbase.net",
+	"license": "MIT",
+	"keywords": [
+		"google-apps-script",
+		"sheetbase",
+		"drive",
+		"file"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/sheetbase/module-drive-server.git"
+	},
+	"bugs": {
+		"url": "https://github.com/sheetbase/module-drive-server/issues"
+	},
+	"dependencies": {
+		"@sheetbase/jsrsasign-server": "^8.0.12"
+	},
+	"peerDependencies": {
+		"@sheetbase/core-server": "0.0.3"
+	},
+	"devDependencies": {
+		"@types/google-apps-script": "0.0.28"
+	}
+}

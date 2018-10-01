@@ -1,0 +1,21 @@
+{
+  "timeZone": "Asia/Bangkok",
+  "dependencies": {
+	"libraries": [
+		{
+		  "userSymbol": "Sheetbase",
+		  "libraryId": "1bhE_YkXnzZLr9hZk_5NXgCY6bAe73UHIGjM4dvyRJLLTyccpu5vS6jeJ",
+		  "version": "3"
+		},
+		{
+		  "userSymbol": "Jsrsasign",
+		  "libraryId": "1vWIxUEbidGO8Jl3tMoofvecwBdQmqMdHpa-zFeR653aFt1VQMbzKzaMV",
+		  "version": "1"
+		}
+	]
+  },
+  "exceptionLogging": "STACKDRIVER",
+  "oauthScopes": [
+	"https://www.googleapis.com/auth/drive"	
+  ]
+}
