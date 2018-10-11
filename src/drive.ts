@@ -86,19 +86,19 @@ export class Drive {
         }
         
         // get uploads folder
-        folder = this.getFolderByName(folder, 'uploads');
+        folder = this._getFolderByName(folder, 'uploads');
 
         // custom folder
         if (customFolder) {
-            folder = this.getFolderByName(folder, customFolder);
+            folder = this._getFolderByName(folder, customFolder);
         } else {
             let date = new Date();
             let year = '' + date.getFullYear();
             let month: any = date.getMonth() + 1;
                 month = '' + (month < 10 ? '0' + month: month);
 
-            folder = this.getFolderByName(folder, year);
-            folder = this.getFolderByName(folder, month);
+            folder = this._getFolderByName(folder, year);
+            folder = this._getFolderByName(folder, month);
         }
 
         let fileName = fileResource.name;
@@ -133,7 +133,7 @@ export class Drive {
         };            
     }
 
-    private getFolderByName(parentFolder: GoogleAppsScript.Drive.Folder, folderName: string) {
+    private _getFolderByName(parentFolder: GoogleAppsScript.Drive.Folder, folderName: string) {
         let folder = parentFolder;
         let childFolders = folder.getFoldersByName(folderName);
         if(!childFolders.hasNext()) {

@@ -84,18 +84,18 @@ function DriveModule() {
                 throw new Error('file/not-supported');
             }
             // get uploads folder
-            folder = this.getFolderByName(folder, 'uploads');
+            folder = this._getFolderByName(folder, 'uploads');
             // custom folder
             if (customFolder) {
-                folder = this.getFolderByName(folder, customFolder);
+                folder = this._getFolderByName(folder, customFolder);
             }
             else {
                 var date = new Date();
                 var year = '' + date.getFullYear();
                 var month = date.getMonth() + 1;
                 month = '' + (month < 10 ? '0' + month : month);
-                folder = this.getFolderByName(folder, year);
-                folder = this.getFolderByName(folder, month);
+                folder = this._getFolderByName(folder, year);
+                folder = this._getFolderByName(folder, month);
             }
             var fileName = fileResource.name;
             var fileExt = fileName.split('.').pop();
@@ -120,7 +120,7 @@ function DriveModule() {
                 url: 'https://drive.google.com/uc?id=' + id + '&export=download'
             };
         };
-        Drive.prototype.getFolderByName = function (parentFolder, folderName) {
+        Drive.prototype._getFolderByName = function (parentFolder, folderName) {
             var folder = parentFolder;
             var childFolders = folder.getFoldersByName(folderName);
             if (!childFolders.hasNext()) {
