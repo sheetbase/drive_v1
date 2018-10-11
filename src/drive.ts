@@ -1,129 +1,148 @@
-import { ISheetbaseModule, IAddonRoutesOptions } from '@sheetbase/core-server';
-import { IDriveModule } from './types/module';
-import { IDriveModuleRoutes, IUploadFileResource, IDriveMethodGetResult, IDriveMethodUploadResult } from './types/misc';
+import { IModule as ISheetbaseModule, IAddonRoutesOptions } from '@sheetbase/core-server';
 
-declare const Sheetbase: ISheetbaseModule;
-declare const Jsrsasign;
+import { IFileResource, IMethodGetResult, IMethodUploadResult } from './types/module';
+import { driveModuleRoutes } from './routes';
 
-declare const driveModuleRoutes: IDriveModuleRoutes;
+declare const Md5;
 
-export function driveModuleExports(): IDriveModule {
+export class Drive {
+    private _Sheetbase: ISheetbaseModule;
 
-    class SheetbaseDrive {
-
-        constructor() {}
-
-        registerRoutes(options: IAddonRoutesOptions = null) {
-            driveModuleRoutes(Sheetbase, this, options);
-        }
-
-        get(fileId: string): IDriveMethodGetResult {
-            const contentFolderId: string = Sheetbase.Config.get('contentFolder');
-            
-            if (!fileId) {
-                throw new Error('file/no-id');
-            }
-            
-            if (!contentFolderId) { throw new Error('file/not-supported'); }
-            try {
-                DriveApp.getFolderById(contentFolderId);
-            } catch(error) {
-                throw new Error('file/not-supported');
-            }
+    constructor() {}
     
-            const file = DriveApp.getFileById(fileId);
-            const id = file.getId();
-            const name = file.getName();
-            const mimeType = file.getMimeType();
-            const description = file.getDescription();
-            const size = file.getSize();
-            const link = file.getUrl();
-            return {
-                id, name, mimeType, description, size, link,
-                url: 'https://drive.google.com/uc?id='+ id +'&export=download'
-            };
-        }
-    
-        upload(fileResource: IUploadFileResource, customFolderName: string = null, customName: string = null): IDriveMethodUploadResult {
-            const contentFolderId: string = Sheetbase.Config.get('contentFolder');
-            let folder: GoogleAppsScript.Drive.Folder;
-
-            if (!fileResource) {
-                throw new Error('file/no-id');
-            }
-    
-            if (
-                !(fileResource instanceof Object) ||
-                !fileResource.name || !fileResource.mimeType || !fileResource.base64String
-            ) {
-                throw new Error('file/invalid');
-            }
-    
-            if (!contentFolderId) { throw new Error('file/not-supported'); }
-            try {
-                folder = DriveApp.getFolderById(contentFolderId);
-            } catch(error) {
-                throw new Error('file/not-supported');
-            }
-            
-            // get uploads folder
-            folder = this.getFolderByName(folder, 'uploads');
-    
-            // custom folder
-            if (customFolderName) {
-                folder = this.getFolderByName(folder, customFolderName);
-            } else {
-                let date = new Date();
-                let year = '' + date.getFullYear();
-                let month: any = date.getMonth() + 1;
-                    month = '' + (month < 10 ? '0' + month: month);
-    
-                folder = this.getFolderByName(folder, year);
-                folder = this.getFolderByName(folder, month);
-            }
-    
-            let fileName = fileResource.name;
-            if (customName) fileName = customName;
-            if (fileName === 'MD5') {
-                fileName = Jsrsasign.KJUR.crypto.Util.md5(fileResource.name);
-            }
-            if (fileName === 'AUTO') {
-                fileName = Utilities.getUuid();
-            }
-            
-            let newFile = folder.createFile(
-                <any> Utilities.newBlob(
-                    Utilities.base64Decode(fileResource.base64String, Utilities.Charset.UTF_8),
-                    fileResource.mimeType,
-                    fileName
-                )
-            ).setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.VIEW);
-            const id = newFile.getId();
-            const name = newFile.getName();
-            const mimeType = newFile.getMimeType();
-            const description = newFile.getDescription();
-            const size = newFile.getSize();
-            const link = newFile.getUrl();
-
-            return {
-                id, name, mimeType, description, size, link,
-                url: 'https://drive.google.com/uc?id='+ id +'&export=download'
-            };            
-        }
-    
-        private getFolderByName(parentFolder: GoogleAppsScript.Drive.Folder, folderName: string) {
-            let folder = parentFolder;
-            let childFolders = folder.getFoldersByName(folderName);
-            if(!childFolders.hasNext()) {
-                folder = folder.createFolder(folderName);
-            } else {
-                folder = childFolders.next();
-            }
-            return folder;
-        }
-
-        
+    init(Sheetbase: ISheetbaseModule) {
+        this._Sheetbase = Sheetbase;
+        return this;
     }
 
-    return new SheetbaseDrive();
+    registerRoutes(options: IAddonRoutesOptions = null) {
+        driveModuleRoutes(this._Sheetbase, this, options);
+    }
+
+    get(fileId: string): IMethodGetResult {
+        const contentFolderId: string = this._Sheetbase.Config.get('contentFolder');
+        
+        if (!fileId) {
+            throw new Error('file/missing');
+        }
+        
+        try {
+            if (!contentFolderId) {
+                throw new Error(null);
+            }
+            DriveApp.getFolderById(contentFolderId);
+        } catch(error) {
+            throw new Error('file/not-supported');
+        }
+
+        // get the file
+        const file = DriveApp.getFileById(fileId);
+
+        // only allow file in the content folder
+        const folders = file.getParents();
+        let folderIds: string[] = [];
+        while (folders.hasNext()) {
+            folderIds.push(folders.next().getId());
+        }
+        if (folderIds.indexOf(contentFolderId) < 0) {
+            throw new Error('Not allowed!');
+        }
+
+        // return
+        const id = file.getId();
+        const name = file.getName();
+        const mimeType = file.getMimeType();
+        const description = file.getDescription();
+        const size = file.getSize();
+        const link = file.getUrl();
+        return {
+            id, name, mimeType, description, size, link,
+            url: 'https://drive.google.com/uc?id='+ id +'&export=download'
+        };
+    }
+
+    upload(fileResource: IFileResource, customFolder: string = null, rename: string = null): IMethodUploadResult {
+        const contentFolderId: string = this._Sheetbase.Config.get('contentFolder');
+        let folder: GoogleAppsScript.Drive.Folder;
+
+        if (!fileResource) {
+            throw new Error('file/missing');
+        }
+
+        if (
+            !(fileResource instanceof Object) ||
+            !fileResource.name || !fileResource.mimeType || !fileResource.base64Content
+        ) {
+            throw new Error('file/invalid');
+        }
+
+        try {
+            if (!contentFolderId) {
+                throw new Error(null);
+            }
+            folder = DriveApp.getFolderById(contentFolderId);
+        } catch(error) {
+            throw new Error('file/not-supported');
+        }
+        
+        // get uploads folder
+        folder = this.getFolderByName(folder, 'uploads');
+
+        // custom folder
+        if (customFolder) {
+            folder = this.getFolderByName(folder, customFolder);
+        } else {
+            let date = new Date();
+            let year = '' + date.getFullYear();
+            let month: any = date.getMonth() + 1;
+                month = '' + (month < 10 ? '0' + month: month);
+
+            folder = this.getFolderByName(folder, year);
+            folder = this.getFolderByName(folder, month);
+        }
+
+        let fileName = fileResource.name;
+        const fileExt: string = fileName.split('.').pop();
+        if (rename) {
+            fileName = rename.indexOf(fileExt) > -1 ? rename: rename + '.' + fileExt;
+        }
+        if (rename === 'MD5') {
+            fileName = Md5.md5(fileName) + '.' + fileExt;
+        }
+        if (rename === 'AUTO') {
+            fileName = Utilities.getUuid() + '.' + fileExt;
+        }
+        
+        let newFile = folder.createFile(
+            <any> Utilities.newBlob(
+                Utilities.base64Decode(fileResource.base64Content, Utilities.Charset.UTF_8),
+                fileResource.mimeType,
+                fileName
+            )
+        ).setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.VIEW);
+        const id = newFile.getId();
+        const name = newFile.getName();
+        const mimeType = newFile.getMimeType();
+        const description = newFile.getDescription();
+        const size = newFile.getSize();
+        const link = newFile.getUrl();
+
+        return {
+            id, name, mimeType, description, size, link,
+            url: 'https://drive.google.com/uc?id='+ id +'&export=download'
+        };            
+    }
+
+    private getFolderByName(parentFolder: GoogleAppsScript.Drive.Folder, folderName: string) {
+        let folder = parentFolder;
+        let childFolders = folder.getFoldersByName(folderName);
+        if(!childFolders.hasNext()) {
+            folder = folder.createFolder(folderName);
+        } else {
+            folder = childFolders.next();
+        }
+        return folder;
+    }
+
+    
 }

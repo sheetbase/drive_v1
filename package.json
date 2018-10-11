@@ -1,11 +1,18 @@
 {
 	"name": "@sheetbase/drive-server",
 	"type": "module",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "File management with Drive for Sheetbase backend app.",
 	"author": "Sheetbase",
 	"homepage": "https://sheetbase.net",
 	"license": "MIT",
+	"scripts": {
+		"build:code": "sheetbase-app-scripts build",
+		"build:readme": "sheetbase-app-scripts readme",
+		"build:docs": "typedoc ./src --out ./docs --mode file --target ES6 --excludeExternals --excludeNotExported --ignoreCompilerErrors",
+		"build": "npm run build:code && npm run build:readme && npm run build:docs",
+		"push": "sheetbase-app-scripts push"
+	},
 	"keywords": [
 		"google-apps-script",
 		"sheetbase",
@@ -20,12 +27,11 @@
 		"url": "https://github.com/sheetbase/module-drive-server/issues"
 	},
 	"dependencies": {
-		"@sheetbase/jsrsasign-server": "^8.0.12"
-	},
-	"peerDependencies": {
-		"@sheetbase/core-server": "0.0.3"
+		"@sheetbase/core-server": "0.0.4",
+		"@sheetbase/md5-server": "2.10.0"
 	},
 	"devDependencies": {
+		"@sheetbase/app-scripts": "0.0.7",
 		"@types/google-apps-script": "0.0.28"
 	}
 }

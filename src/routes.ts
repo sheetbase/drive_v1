@@ -1,13 +1,12 @@
-import { ISheetbaseModule, IRoutingErrors, IAddonRoutesOptions, IHttpHandler } from '@sheetbase/core-server';
-import { IDriveModule } from './types/module';
-import { IUploadFileResource } from './types/misc';
+import { IModule as ISheetbaseModule, IRoutingErrors, IAddonRoutesOptions, IHttpHandler } from '@sheetbase/core-server';
+import { IModule, IFileResource } from './types/module';
 
 export const DRIVE_ROUTING_ERRORS: IRoutingErrors = {
     'file/unknown': {
         status: 400, message: 'Unknown errors.',
     },
-    'file/no-id': {
-        status: 400, message: 'No id.',
+    'file/missing': {
+        status: 400, message: 'Missing inputs.',
     },
     'file/not-supported': {
         status: 400, message: 'Not supported.',
@@ -17,22 +16,22 @@ export const DRIVE_ROUTING_ERRORS: IRoutingErrors = {
     }
 };
 
-export function gmailModuleRoutes(
+export function driveModuleRoutes(
     Sheetbase: ISheetbaseModule,
-    SheetbaseDrive: IDriveModule,
+    Drive: IModule,
     options: IAddonRoutesOptions 
 ): void {
     const customName: string = options.customName || 'file';
     const middlewares: IHttpHandler[] = options.middlewares || ([
         (req, res, next) => next()
     ]);
-
     
+    // get file information
     Sheetbase.Router.get('/' + customName, ... middlewares, (req, res) => {
-        const fileId: string = req.queries.id;
+        const fileId: string = req.queries['fileId'];
         let result: any;
         try {
-            result = SheetbaseDrive.get(fileId);
+            result = Drive.get(fileId);
         } catch (code) {
             const { status, message } = DRIVE_ROUTING_ERRORS[code];
             return res.error(code, message, status);
@@ -40,13 +39,14 @@ export function gmailModuleRoutes(
         return res.success(result);
     });
 
-    Sheetbase.Router.post('/' + customName, ... middlewares, (req, res) => {
-        const fileResource: IUploadFileResource = req.body.file;
-        const customFolder: string = req.body.folder;
-        const customName: string = req.body.name;
+    // upload a file
+    Sheetbase.Router.put('/' + customName, ... middlewares, (req, res) => {
+        const fileResource: IFileResource = req.body.fileResource;
+        const customFolder: string = req.body.customFolder;
+        const rename: string = req.body.rename;
         let result: any;
         try {
-            result = SheetbaseDrive.upload(fileResource, customFolder, customName);
+            result = Drive.upload(fileResource, customFolder, rename);
         } catch (code) {
             const { status, message } = DRIVE_ROUTING_ERRORS[code];
             return res.error(code, message, status);
