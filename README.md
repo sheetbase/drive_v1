@@ -2,11 +2,11 @@
 
 File management with Drive for Sheetbase backend app.
 
-<!-- <content> -->
+<!-- <block:header> -->
 
 [![License][license_badge]][license_url] [![clasp][clasp_badge]][clasp_url] [![Support me on Patreon][patreon_badge]][patreon_url] [![PayPal][paypal_donate_badge]][paypal_donate_url] [![Ask me anything][ask_me_badge]][ask_me_url]
 
-<!-- </content> -->
+<!-- </block:header> -->
 
 ## Install
 
@@ -24,30 +24,19 @@ File management with Drive for Sheetbase backend app.
 
 ```ts
 function example1(): void {
-  const FileManager = Drive.init(Sheetbase);
-
-  // content folder
-  // https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing
-  Sheetbase.Config.set("contentFolder", "1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY");
-
-  const text = FileManager.get("1nxDE5wsKAm7Tfc95QAOWlTaa5I9y8eFE"); // file.txt
-  const image = FileManager.get("1rGI-wlNTDkgthzNfVZjKSzygjhD-WshV"); // image.jpg
+  const text = Drive.get("1nxDE5wsKAm7Tfc95QAOWlTaa5I9y8eFE"); // file.txt
+  const image = Drive.get("1rGI-wlNTDkgthzNfVZjKSzygjhD-WshV"); // image.jpg
   Logger.log(text);
   Logger.log(image);
 }
 
 function example2(): void {
-  const FileManager = Drive.init(Sheetbase);
-
-  // content folder
-  // https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing
-  Sheetbase.Config.set("contentFolder", "1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY");
-  const result1 = FileManager.upload({
+  const result1 = Drive.upload({
     name: "file.txt",
     mimeType: "text/plain",
     base64Content: "SGVsbG8sIHdvcmxkIQ=="
   });
-  const result2 = FileManager.upload(
+  const result2 = Drive.upload(
     {
       name: "file.txt",
       mimeType: "text/plain",
@@ -55,7 +44,7 @@ function example2(): void {
     },
     "my_folder"
   );
-  const result3 = FileManager.upload(
+  const result3 = Drive.upload(
     {
       name: "file.txt",
       mimeType: "text/plain",
@@ -64,7 +53,7 @@ function example2(): void {
     null,
     "AUTO"
   );
-  const result4 = FileManager.upload(
+  const result4 = Drive.upload(
     {
       name: "file.txt",
       mimeType: "text/plain",
@@ -86,13 +75,13 @@ See the docs: https://sheetbase.github.io/module-drive-server
 
 ## API
 
-An overview of the API, for detail please refer [the documentation](https://sheetbase.github.io/module-drive-server)
+An overview of the API, for detail please refer [the documentation](https://sheetbase.github.io/module-drive-server).
 
 ### Drive
 
 ```ts
 export interface IModule {
-  init(Sheetbase: ISheetbaseModule): IModule;
+  init(options: IOptions): IModule;
   registerRoutes(options?: IAddonRoutesOptions): void;
   get(fileId: string): IMethodGetResult;
   upload(
@@ -107,7 +96,7 @@ export interface IModule {
 
 **@sheetbase/drive-server** is released under the [MIT](https://github.com/sheetbase/module-drive-server/blob/master/LICENSE) license.
 
-<!-- <footer> -->
+<!-- <block:footer> -->
 
 [license_badge]: https://img.shields.io/github/license/mashape/apistatus.svg
 [license_url]: https://github.com/sheetbase/module-drive-server/blob/master/LICENSE
@@ -120,4 +109,4 @@ export interface IModule {
 [ask_me_badge]: https://img.shields.io/badge/ask/me-anything-1abc9c.svg
 [ask_me_url]: https://m.me/sheetbase
 
-<!-- </footer> -->
+<!-- </block:footer> -->

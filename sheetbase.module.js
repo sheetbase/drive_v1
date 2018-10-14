@@ -5,28 +5,34 @@ var module = module || { exports: exports };
  * Name: @sheetbase/drive-server
  * Export name: Drive
  * Description: File management with Drive for Sheetbase backend app.
- * Version: 0.0.2
+ * Version: 0.0.3
  * Author: Sheetbase
  * Homepage: https://sheetbase.net
  * License: MIT
  * Repo: https://github.com/sheetbase/module-drive-server.git
  */
 
-function DriveModule() {
-    // import { IModule as ISheetbaseModule, IAddonRoutesOptions } from '@sheetbase/core-server';
+function DriveModule(options) {
+    // import { IAddonRoutesOptions } from '@sheetbase/core-server';
+    // import { Md5 } from '@sheetbase/md5-server';
+    // import { IFileResource, IMethodGetResult, IMethodUploadResult, IOptions } from '../index';
+    // import { driveModuleRoutes } from './routes';
     var Drive = /** @class */ (function () {
-        function Drive() {
+        function Drive(options) {
+            this._options = {
+                contentFolder: null
+            };
+            this.init(options);
         }
-        Drive.prototype.init = function (Sheetbase) {
-            this._Sheetbase = Sheetbase;
+        Drive.prototype.init = function (options) {
+            this._options = options;
             return this;
         };
         Drive.prototype.registerRoutes = function (options) {
-            if (options === void 0) { options = null; }
-            driveModuleRoutes(this._Sheetbase, this, options);
+            driveModuleRoutes(this, this._options.router, options);
         };
         Drive.prototype.get = function (fileId) {
-            var contentFolderId = this._Sheetbase.Config.get('contentFolder');
+            var contentFolderId = this._options.contentFolder;
             if (!fileId) {
                 throw new Error('file/missing');
             }
@@ -65,7 +71,7 @@ function DriveModule() {
         Drive.prototype.upload = function (fileResource, customFolder, rename) {
             if (customFolder === void 0) { customFolder = null; }
             if (rename === void 0) { rename = null; }
-            var contentFolderId = this._Sheetbase.Config.get('contentFolder');
+            var contentFolderId = this._options.contentFolder;
             var folder;
             if (!fileResource) {
                 throw new Error('file/missing');
@@ -133,9 +139,9 @@ function DriveModule() {
         };
         return Drive;
     }());
-    // import { IModule as ISheetbaseModule, IRoutingErrors, IAddonRoutesOptions, IHttpHandler } from '@sheetbase/core-server';
+    // import { IRoutingErrors, IAddonRoutesOptions, IRouteHandler, IRouter, IRouteResponse } from '@sheetbase/core-server';
     // import { IModule, IFileResource } from './types/module';
-    var DRIVE_ROUTING_ERRORS = {
+    var ROUTING_ERRORS = {
         'file/unknown': {
             status: 400, message: 'Unknown errors.'
         },
@@ -149,47 +155,51 @@ function DriveModule() {
             status: 400, message: 'File data must contains name, mimeType and base64String.'
         }
     };
-    function driveModuleRoutes(Sheetbase, Drive, options) {
-        var _a, _b;
-        var customName = options.customName || 'file';
+    function routingError(res, code) {
+        var error = ROUTING_ERRORS[code] || ROUTING_ERRORS['file/unknown'];
+        var status = error.status, message = error.message;
+        return res.error(code, message, status);
+    }
+    function driveModuleRoutes(Drive, Router, options) {
+        if (!Router) {
+            throw new Error('No router, please check out for Sheetbase Router.');
+        }
+        var endpoint = options.endpoint || 'file';
         var middlewares = options.middlewares || ([
             function (req, res, next) { return next(); }
         ]);
         // get file information
-        (_a = Sheetbase.Router).get.apply(_a, ['/' + customName].concat(middlewares, [function (req, res) {
-                var fileId = req.queries['fileId'];
-                var result;
+        Router.get.apply(Router, ['/' + endpoint].concat(middlewares, [function (req, res) {
+                var result = {};
                 try {
+                    var fileId = req.query.fileId;
                     result = Drive.get(fileId);
                 }
                 catch (code) {
-                    var _a = DRIVE_ROUTING_ERRORS[code], status = _a.status, message = _a.message;
-                    return res.error(code, message, status);
+                    return routingError(res, code);
                 }
                 return res.success(result);
             }]));
         // upload a file
-        (_b = Sheetbase.Router).put.apply(_b, ['/' + customName].concat(middlewares, [function (req, res) {
-                var fileResource = req.body.fileResource;
-                var customFolder = req.body.customFolder;
-                var rename = req.body.rename;
-                var result;
+        Router.put.apply(Router, ['/' + endpoint].concat(middlewares, [function (req, res) {
+                var result = {};
                 try {
+                    var fileResource = req.body.fileResource;
+                    var customFolder = req.body.customFolder;
+                    var rename = req.body.rename;
                     result = Drive.upload(fileResource, customFolder, rename);
                 }
                 catch (code) {
-                    var _a = DRIVE_ROUTING_ERRORS[code], status = _a.status, message = _a.message;
-                    return res.error(code, message, status);
+                    return routingError(res, code);
                 }
                 return res.success(result);
             }]));
     }
-    // import { IModule } from './types/module';
-    // import { Drive } from './drive';
-    var moduleExports = new Drive();
+    var moduleExports = new Drive(options);
     return moduleExports || {};
 }
 exports.DriveModule = DriveModule;
-// add to the global namespace
-var proccess = proccess || this;
-proccess['Drive'] = DriveModule();
+// add 'Drive' to the global namespace
+(function (process) {
+    process['Drive'] = DriveModule();
+})(this);

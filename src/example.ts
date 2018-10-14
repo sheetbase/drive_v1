@@ -1,48 +1,34 @@
-import { IModule } from './types/module';
-import { IModule as ISheetbaseModule } from '@sheetbase/core-server';
+import { DriveModule } from '../index';
 
-var proccess = proccess || this;
+// content folder: https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing
+const contentFolder = '1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY';
 
-declare const Sheetbase: ISheetbaseModule;
-
-declare const DriveModule: {(): IModule};
-const Drive: IModule = proccess['Drive'] || DriveModule();
+const Drive = DriveModule({ contentFolder });
 
 export function example1(): void {
-    const FileManager = Drive.init(Sheetbase);
-
-    // content folder
-    // https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing
-    Sheetbase.Config.set('contentFolder', '1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY');
-
-    const text = FileManager.get('1nxDE5wsKAm7Tfc95QAOWlTaa5I9y8eFE'); // file.txt
-    const image = FileManager.get('1rGI-wlNTDkgthzNfVZjKSzygjhD-WshV'); // image.jpg
+    const text = Drive.get('1nxDE5wsKAm7Tfc95QAOWlTaa5I9y8eFE'); // file.txt
+    const image = Drive.get('1rGI-wlNTDkgthzNfVZjKSzygjhD-WshV'); // image.jpg
     Logger.log(text);
     Logger.log(image);
 }
 
 export function example2(): void {
-    const FileManager = Drive.init(Sheetbase);
-    
-    // content folder
-    // https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing
-    Sheetbase.Config.set('contentFolder', '1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY');
-    const result1 = FileManager.upload({
+    const result1 = Drive.upload({
         name: 'file.txt',
         mimeType: 'text/plain',
         base64Content: 'SGVsbG8sIHdvcmxkIQ=='
     });
-    const result2 = FileManager.upload({
+    const result2 = Drive.upload({
         name: 'file.txt',
         mimeType: 'text/plain',
         base64Content: 'SGVsbG8sIHdvcmxkIQ=='
     }, 'my_folder');
-    const result3 = FileManager.upload({
+    const result3 = Drive.upload({
         name: 'file.txt',
         mimeType: 'text/plain',
         base64Content: 'SGVsbG8sIHdvcmxkIQ=='
     }, null, 'AUTO');
-    const result4 = FileManager.upload({
+    const result4 = Drive.upload({
         name: 'file.txt',
         mimeType: 'text/plain',
         base64Content: 'SGVsbG8sIHdvcmxkIQ=='

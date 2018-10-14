@@ -76,11 +76,13 @@
 								<li class="tsd-kind-interface"><a href="interfaces/imethodgetresult.html" class="tsd-kind-icon">IMethod<wbr>Get<wbr>Result</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/imethoduploadresult.html" class="tsd-kind-icon">IMethod<wbr>Upload<wbr>Result</a></li>
 								<li class="tsd-kind-interface"><a href="interfaces/imodule.html" class="tsd-kind-icon">IModule</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/ioptions.html" class="tsd-kind-icon">IOptions</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable"><a href="globals.html#drivemodule" class="tsd-kind-icon">Drive<wbr>Module</a></li>
 								<li class="tsd-kind-variable"><a href="globals.html#moduleexports" class="tsd-kind-icon">module<wbr>Exports</a></li>
 							</ul>
 						</section>
@@ -95,7 +97,7 @@
 						<section class="tsd-index-section ">
 							<h3>Object literals</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-object-literal"><a href="globals.html#drive_routing_errors" class="tsd-kind-icon">DRIVE_<wbr>ROUTING_<wbr>ERRORS</a></li>
+								<li class="tsd-kind-object-literal"><a href="globals.html#routing_errors" class="tsd-kind-icon">ROUTING_<wbr>ERRORS</a></li>
 							</ul>
 						</section>
 					</div>
@@ -104,12 +106,43 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable">
-					<a name="moduleexports" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> module<wbr>Exports</h3>
-					<div class="tsd-signature tsd-kind-icon">module<wbr>Exports<span class="tsd-signature-symbol">:</span> <a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a><span class="tsd-signature-symbol"> =&nbsp;new Drive()</span></div>
+					<a name="drivemodule" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> Drive<wbr>Module</h3>
+					<div class="tsd-signature tsd-kind-icon">Drive<wbr>Module<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/index.ts#L4">index.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/index.ts#L4">index.ts:4</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="interfaces/ioptions.html" class="tsd-signature-type">IOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>options: <a href="interfaces/ioptions.html" class="tsd-signature-type">IOptions</a></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable">
+					<a name="moduleexports" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> module<wbr>Exports</h3>
+					<div class="tsd-signature tsd-kind-icon">module<wbr>Exports<span class="tsd-signature-symbol">:</span> <a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a><span class="tsd-signature-symbol"> =&nbsp;new Drive(options)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/index.ts#L7">index.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -120,22 +153,22 @@
 					<a name="drivemoduleroutes" class="tsd-anchor"></a>
 					<h3>drive<wbr>Module<wbr>Routes</h3>
 					<ul class="tsd-signatures tsd-kind-function">
-						<li class="tsd-signature tsd-kind-icon">drive<wbr>Module<wbr>Routes<span class="tsd-signature-symbol">(</span>Sheetbase<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ISheetbaseModule</span>, Drive<span class="tsd-signature-symbol">: </span><a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IAddonRoutesOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">drive<wbr>Module<wbr>Routes<span class="tsd-signature-symbol">(</span>Drive<span class="tsd-signature-symbol">: </span><a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a>, Router<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IRouter</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IAddonRoutesOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L19">routes.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L25">routes.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>Sheetbase: <span class="tsd-signature-type">ISheetbaseModule</span></h5>
+									<h5>Drive: <a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a></h5>
 								</li>
 								<li>
-									<h5>Drive: <a href="interfaces/imodule.html" class="tsd-signature-type">IModule</a></h5>
+									<h5>Router: <span class="tsd-signature-type">IRouter</span></h5>
 								</li>
 								<li>
 									<h5>options: <span class="tsd-signature-type">IAddonRoutesOptions</span></h5>
@@ -155,7 +188,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/example.ts#L11">example.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/example.ts#L8">example.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -172,7 +205,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/example.ts#L24">example.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/example.ts#L15">example.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -183,130 +216,130 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Object literals</h2>
 				<section class="tsd-panel tsd-member tsd-kind-object-literal">
-					<a name="drive_routing_errors" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> DRIVE_<wbr>ROUTING_<wbr>ERRORS</h3>
-					<div class="tsd-signature tsd-kind-icon">DRIVE_<wbr>ROUTING_<wbr>ERRORS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<a name="routing_errors" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> ROUTING_<wbr>ERRORS</h3>
+					<div class="tsd-signature tsd-kind-icon">ROUTING_<wbr>ERRORS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L4">routes.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L4">routes.ts:4</a></li>
 						</ul>
 					</aside>
 					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
-						<a name="drive_routing_errors.file_invalid" class="tsd-anchor"></a>
+						<a name="routing_errors.file_invalid" class="tsd-anchor"></a>
 						<h3>file/invalid</h3>
 						<div class="tsd-signature tsd-kind-icon">file/invalid<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L14">routes.ts:14</a></li>
+								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L14">routes.ts:14</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_invalid.message" class="tsd-anchor"></a>
+							<a name="routing_errors.file_invalid.message" class="tsd-anchor"></a>
 							<h3>message</h3>
 							<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;File data must contains name, mimeType and base64String.&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L15">routes.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L15">routes.ts:15</a></li>
 								</ul>
 							</aside>
 						</section>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_invalid.status" class="tsd-anchor"></a>
+							<a name="routing_errors.file_invalid.status" class="tsd-anchor"></a>
 							<h3>status</h3>
 							<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;400</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L15">routes.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L15">routes.ts:15</a></li>
 								</ul>
 							</aside>
 						</section>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
-						<a name="drive_routing_errors.file_missing" class="tsd-anchor"></a>
+						<a name="routing_errors.file_missing" class="tsd-anchor"></a>
 						<h3>file/missing</h3>
 						<div class="tsd-signature tsd-kind-icon">file/missing<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L8">routes.ts:8</a></li>
+								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L8">routes.ts:8</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_missing.message-1" class="tsd-anchor"></a>
+							<a name="routing_errors.file_missing.message-1" class="tsd-anchor"></a>
 							<h3>message</h3>
 							<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Missing inputs.&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L9">routes.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L9">routes.ts:9</a></li>
 								</ul>
 							</aside>
 						</section>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_missing.status-1" class="tsd-anchor"></a>
+							<a name="routing_errors.file_missing.status-1" class="tsd-anchor"></a>
 							<h3>status</h3>
 							<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;400</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L9">routes.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L9">routes.ts:9</a></li>
 								</ul>
 							</aside>
 						</section>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
-						<a name="drive_routing_errors.file_not_supported" class="tsd-anchor"></a>
+						<a name="routing_errors.file_not_supported" class="tsd-anchor"></a>
 						<h3>file/not-<wbr>supported</h3>
 						<div class="tsd-signature tsd-kind-icon">file/not-<wbr>supported<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L11">routes.ts:11</a></li>
+								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L11">routes.ts:11</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_not_supported.message-2" class="tsd-anchor"></a>
+							<a name="routing_errors.file_not_supported.message-2" class="tsd-anchor"></a>
 							<h3>message</h3>
 							<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Not supported.&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L12">routes.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L12">routes.ts:12</a></li>
 								</ul>
 							</aside>
 						</section>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_not_supported.status-2" class="tsd-anchor"></a>
+							<a name="routing_errors.file_not_supported.status-2" class="tsd-anchor"></a>
 							<h3>status</h3>
 							<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;400</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L12">routes.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L12">routes.ts:12</a></li>
 								</ul>
 							</aside>
 						</section>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
-						<a name="drive_routing_errors.file_unknown" class="tsd-anchor"></a>
+						<a name="routing_errors.file_unknown" class="tsd-anchor"></a>
 						<h3>file/unknown</h3>
 						<div class="tsd-signature tsd-kind-icon">file/unknown<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L5">routes.ts:5</a></li>
+								<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L5">routes.ts:5</a></li>
 							</ul>
 						</aside>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_unknown.message-3" class="tsd-anchor"></a>
+							<a name="routing_errors.file_unknown.message-3" class="tsd-anchor"></a>
 							<h3>message</h3>
 							<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;Unknown errors.&quot;</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L6">routes.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L6">routes.ts:6</a></li>
 								</ul>
 							</aside>
 						</section>
 						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="drive_routing_errors.file_unknown.status-3" class="tsd-anchor"></a>
+							<a name="routing_errors.file_unknown.status-3" class="tsd-anchor"></a>
 							<h3>status</h3>
 							<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;400</span></div>
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/a83c17f/src/routes.ts#L6">routes.ts:6</a></li>
+									<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/routes.ts#L6">routes.ts:6</a></li>
 								</ul>
 							</aside>
 						</section>
@@ -339,6 +372,12 @@
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/imodule.html" class="tsd-kind-icon">IModule</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ioptions.html" class="tsd-kind-icon">IOptions</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#drivemodule" class="tsd-kind-icon">Drive<wbr>Module</a>
+					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#moduleexports" class="tsd-kind-icon">module<wbr>Exports</a>
 					</li>
@@ -352,7 +391,7 @@
 						<a href="globals.html#example2" class="tsd-kind-icon">example2</a>
 					</li>
 					<li class=" tsd-kind-object-literal">
-						<a href="globals.html#drive_routing_errors" class="tsd-kind-icon">DRIVE_<wbr>ROUTING_<wbr>ERRORS</a>
+						<a href="globals.html#routing_errors" class="tsd-kind-icon">ROUTING_<wbr>ERRORS</a>
 					</li>
 				</ul>
 			</nav>

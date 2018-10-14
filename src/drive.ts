@@ -1,26 +1,30 @@
-import { IModule as ISheetbaseModule, IAddonRoutesOptions } from '@sheetbase/core-server';
+import { IAddonRoutesOptions } from '@sheetbase/core-server';
+import { Md5 } from '@sheetbase/md5-server';
 
-import { IFileResource, IMethodGetResult, IMethodUploadResult } from './types/module';
+import { IFileResource, IMethodGetResult, IMethodUploadResult, IOptions } from '../index';
 import { driveModuleRoutes } from './routes';
 
-declare const Md5;
 
 export class Drive {
-    private _Sheetbase: ISheetbaseModule;
+    private _options: IOptions = {
+        contentFolder: null
+    };
 
-    constructor() {}
+    constructor(options: IOptions) {
+        this.init(options);
+    }
     
-    init(Sheetbase: ISheetbaseModule) {
-        this._Sheetbase = Sheetbase;
+    init(options: IOptions) {
+        this._options = options;
         return this;
     }
 
-    registerRoutes(options: IAddonRoutesOptions = null) {
-        driveModuleRoutes(this._Sheetbase, this, options);
+    registerRoutes(options?: IAddonRoutesOptions) {
+        driveModuleRoutes(this, this._options.router, options);
     }
 
     get(fileId: string): IMethodGetResult {
-        const contentFolderId: string = this._Sheetbase.Config.get('contentFolder');
+        const contentFolderId = this._options.contentFolder;
         
         if (!fileId) {
             throw new Error('file/missing');
@@ -62,7 +66,7 @@ export class Drive {
     }
 
     upload(fileResource: IFileResource, customFolder: string = null, rename: string = null): IMethodUploadResult {
-        const contentFolderId: string = this._Sheetbase.Config.get('contentFolder');
+        const contentFolderId = this._options.contentFolder;
         let folder: GoogleAppsScript.Drive.Folder;
 
         if (!fileResource) {

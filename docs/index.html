@@ -62,9 +62,9 @@
 			<div class="tsd-panel tsd-typography">
 				<h1 id="sheetbase-module-sheetbase-drive-server">Sheetbase Module: @sheetbase/drive-server</h1>
 				<p>File management with Drive for Sheetbase backend app.</p>
-				<!-- <content> -->
+				<!-- <block:header> -->
 				<p><a href="https://github.com/sheetbase/module-drive-server/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg" alt="License"></a> <a href="https://github.com/google/clasp"><img src="https://img.shields.io/badge/built%20with-clasp-4285f4.svg" alt="clasp"></a> <a href="https://www.patreon.com/lamnhan"><img src="https://ionicabizau.github.io/badges/patreon.svg" alt="Support me on Patreon"></a> <a href="https://www.paypal.me/lamnhan"><img src="https://ionicabizau.github.io/badges/paypal_donate.svg" alt="PayPal"></a> <a href="https://m.me/sheetbase"><img src="https://img.shields.io/badge/ask/me-anything-1abc9c.svg" alt="Ask me anything"></a></p>
-				<!-- </content> -->
+				<!-- </block:header> -->
 				<h2 id="install">Install</h2>
 				<ul>
 					<li><p>Using npm: <code>npm install --save @sheetbase/drive-server</code></p>
@@ -77,30 +77,19 @@
 				<p><code>https://www.googleapis.com/auth/drive</code></p>
 				<h2 id="examples">Examples</h2>
 				<pre><code class="language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">example1</span>(<span class="hljs-params"></span>): <span class="hljs-title">void</span> </span>{
-  <span class="hljs-keyword">const</span> FileManager = Drive.init(Sheetbase);
-
-  <span class="hljs-comment">// content folder</span>
-  <span class="hljs-comment">// https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing</span>
-  Sheetbase.Config.set(<span class="hljs-string">"contentFolder"</span>, <span class="hljs-string">"1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY"</span>);
-
-  <span class="hljs-keyword">const</span> text = FileManager.get(<span class="hljs-string">"1nxDE5wsKAm7Tfc95QAOWlTaa5I9y8eFE"</span>); <span class="hljs-comment">// file.txt</span>
-  <span class="hljs-keyword">const</span> image = FileManager.get(<span class="hljs-string">"1rGI-wlNTDkgthzNfVZjKSzygjhD-WshV"</span>); <span class="hljs-comment">// image.jpg</span>
+  <span class="hljs-keyword">const</span> text = Drive.get(<span class="hljs-string">"1nxDE5wsKAm7Tfc95QAOWlTaa5I9y8eFE"</span>); <span class="hljs-comment">// file.txt</span>
+  <span class="hljs-keyword">const</span> image = Drive.get(<span class="hljs-string">"1rGI-wlNTDkgthzNfVZjKSzygjhD-WshV"</span>); <span class="hljs-comment">// image.jpg</span>
   Logger.log(text);
   Logger.log(image);
 }
 
 <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">example2</span>(<span class="hljs-params"></span>): <span class="hljs-title">void</span> </span>{
-  <span class="hljs-keyword">const</span> FileManager = Drive.init(Sheetbase);
-
-  <span class="hljs-comment">// content folder</span>
-  <span class="hljs-comment">// https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing</span>
-  Sheetbase.Config.set(<span class="hljs-string">"contentFolder"</span>, <span class="hljs-string">"1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY"</span>);
-  <span class="hljs-keyword">const</span> result1 = FileManager.upload({
+  <span class="hljs-keyword">const</span> result1 = Drive.upload({
     name: <span class="hljs-string">"file.txt"</span>,
     mimeType: <span class="hljs-string">"text/plain"</span>,
     base64Content: <span class="hljs-string">"SGVsbG8sIHdvcmxkIQ=="</span>
   });
-  <span class="hljs-keyword">const</span> result2 = FileManager.upload(
+  <span class="hljs-keyword">const</span> result2 = Drive.upload(
     {
       name: <span class="hljs-string">"file.txt"</span>,
       mimeType: <span class="hljs-string">"text/plain"</span>,
@@ -108,7 +97,7 @@
     },
     <span class="hljs-string">"my_folder"</span>
   );
-  <span class="hljs-keyword">const</span> result3 = FileManager.upload(
+  <span class="hljs-keyword">const</span> result3 = Drive.upload(
     {
       name: <span class="hljs-string">"file.txt"</span>,
       mimeType: <span class="hljs-string">"text/plain"</span>,
@@ -117,7 +106,7 @@
     <span class="hljs-literal">null</span>,
     <span class="hljs-string">"AUTO"</span>
   );
-  <span class="hljs-keyword">const</span> result4 = FileManager.upload(
+  <span class="hljs-keyword">const</span> result4 = Drive.upload(
     {
       name: <span class="hljs-string">"file.txt"</span>,
       mimeType: <span class="hljs-string">"text/plain"</span>,
@@ -134,10 +123,10 @@
 				<h2 id="documentation">Documentation</h2>
 				<p>See the docs: <a href="https://sheetbase.github.io/module-drive-server">https://sheetbase.github.io/module-drive-server</a></p>
 				<h2 id="api">API</h2>
-				<p>An overview of the API, for detail please refer <a href="https://sheetbase.github.io/module-drive-server">the documentation</a></p>
+				<p>An overview of the API, for detail please refer <a href="https://sheetbase.github.io/module-drive-server">the documentation</a>.</p>
 				<h3 id="drive">Drive</h3>
 				<pre><code class="language-ts"><span class="hljs-keyword">export</span> <span class="hljs-keyword">interface</span> IModule {
-  init(Sheetbase: ISheetbaseModule): IModule;
+  init(options: IOptions): IModule;
   registerRoutes(options?: IAddonRoutesOptions): <span class="hljs-built_in">void</span>;
   <span class="hljs-keyword">get</span>(fileId: <span class="hljs-built_in">string</span>): IMethodGetResult;
   upload(
@@ -148,8 +137,8 @@
 }</code></pre>
 				<h2 id="license">License</h2>
 				<p><strong>@sheetbase/drive-server</strong> is released under the <a href="https://github.com/sheetbase/module-drive-server/blob/master/LICENSE">MIT</a> license.</p>
-				<!-- <footer> -->
-				<!-- </footer> -->
+				<!-- <block:footer> -->
+				<!-- </block:footer> -->
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -177,6 +166,12 @@
 					<li class=" tsd-kind-interface">
 						<a href="interfaces/imodule.html" class="tsd-kind-icon">IModule</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="interfaces/ioptions.html" class="tsd-kind-icon">IOptions</a>
+					</li>
+					<li class=" tsd-kind-variable">
+						<a href="globals.html#drivemodule" class="tsd-kind-icon">Drive<wbr>Module</a>
+					</li>
 					<li class=" tsd-kind-variable">
 						<a href="globals.html#moduleexports" class="tsd-kind-icon">module<wbr>Exports</a>
 					</li>
@@ -190,7 +185,7 @@
 						<a href="globals.html#example2" class="tsd-kind-icon">example2</a>
 					</li>
 					<li class=" tsd-kind-object-literal">
-						<a href="globals.html#drive_routing_errors" class="tsd-kind-icon">DRIVE_<wbr>ROUTING_<wbr>ERRORS</a>
+						<a href="globals.html#routing_errors" class="tsd-kind-icon">ROUTING_<wbr>ERRORS</a>
 					</li>
 				</ul>
 			</nav>
