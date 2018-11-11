@@ -38,20 +38,20 @@ const Drive = DriveModule.Drive;
 ### Examples
 
 ```ts
-import { drive } from "./public_api";
+import * as Drive from "./public_api";
 
 // content folder: https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing
 const contentFolder = "1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY";
 
 function load_() {
-  return drive({ contentFolder });
+  return Drive.drive({ contentFolder });
 }
 
 export function example1(): void {
   const Drive = load_();
 
-  const text = Drive.get("1nxDE5wsKAm7Tfc95QAOWlTaa5I9y8eFE"); // file.txt
-  const image = Drive.get("1rGI-wlNTDkgthzNfVZjKSzygjhD-WshV"); // image.jpg
+  const text = Drive.get("1QKOvTtyGgZdY_QD6KHZ662ScNhZQhgtI"); // file.txt
+  const image = Drive.get("147iOWt3-4aNaTqSrGLP8Wl-DgPxCaD1t"); // image.jpg
   Logger.log(text);
   Logger.log(image);
 }

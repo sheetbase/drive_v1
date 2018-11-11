@@ -1,6 +1,6 @@
 {
    "name": "@sheetbase/drive-server",
-   "version": "0.0.3",
+   "version": "0.0.4",
    "description": "File management with Drive for Sheetbase backend app.",
    "author": "Sheetbase",
    "homepage": "https://sheetbase.net",
