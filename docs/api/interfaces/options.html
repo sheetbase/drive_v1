@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>IMethodGetResult | @sheetbase/drive-server</title>
+	<title>Options | @sheetbase/drive-server</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -49,13 +49,13 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../globals.html">Globals</a>
+					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="imethodgetresult.html">IMethodGetResult</a>
+					<a href="options.html">Options</a>
 				</li>
 			</ul>
-			<h1>Interface IMethodGetResult</h1>
+			<h1>Interface Options</h1>
 		</div>
 	</div>
 </header>
@@ -66,12 +66,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">IMethodGetResult</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="imethoduploadresult.html" class="tsd-signature-type">IMethodUploadResult</a>
-							</li>
-						</ul>
+						<span class="target">Options</span>
 					</li>
 				</ul>
 			</section>
@@ -82,13 +77,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imethodgetresult.html#description" class="tsd-kind-icon">description</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imethodgetresult.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imethodgetresult.html#link" class="tsd-kind-icon">link</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imethodgetresult.html#mimetype" class="tsd-kind-icon">mime<wbr>Type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imethodgetresult.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imethodgetresult.html#size" class="tsd-kind-icon">size</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="imethodgetresult.html#url" class="tsd-kind-icon">url</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="options.html#contentfolder" class="tsd-kind-icon">content<wbr>Folder</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="options.html#disabledroutes" class="tsd-kind-icon">disabled<wbr>Routes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="options.html#router" class="tsd-kind-icon">router</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,72 +88,32 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="description" class="tsd-anchor"></a>
-					<h3>description</h3>
-					<div class="tsd-signature tsd-kind-icon">description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="contentfolder" class="tsd-anchor"></a>
+					<h3>content<wbr>Folder</h3>
+					<div class="tsd-signature tsd-kind-icon">content<wbr>Folder<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/types/module.ts#L21">types/module.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/6998845/src/lib/types.ts#L4">lib/types.ts:4</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="disabledroutes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> disabled<wbr>Routes</h3>
+					<div class="tsd-signature tsd-kind-icon">disabled<wbr>Routes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/types/module.ts#L18">types/module.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/6998845/src/lib/types.ts#L6">lib/types.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="link" class="tsd-anchor"></a>
-					<h3>link</h3>
-					<div class="tsd-signature tsd-kind-icon">link<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="router" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> router</h3>
+					<div class="tsd-signature tsd-kind-icon">router<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RouterService</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/types/module.ts#L23">types/module.ts:23</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="mimetype" class="tsd-anchor"></a>
-					<h3>mime<wbr>Type</h3>
-					<div class="tsd-signature tsd-kind-icon">mime<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/types/module.ts#L20">types/module.ts:20</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/types/module.ts#L19">types/module.ts:19</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="size" class="tsd-anchor"></a>
-					<h3>size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/types/module.ts#L22">types/module.ts:22</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="url" class="tsd-anchor"></a>
-					<h3>url</h3>
-					<div class="tsd-signature tsd-kind-icon">url<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Sheetbase/module-drive-server/blob/3a01d22/src/types/module.ts#L24">types/module.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/6998845/src/lib/types.ts#L5">lib/types.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,74 +123,50 @@
 			<nav class="tsd-navigation primary">
 				<ul>
 					<li class="globals  ">
-						<a href="../globals.html"><em>Globals</em></a>
+						<a href="../index.html"><em>Globals</em></a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class">
-						<a href="../classes/drive.html" class="tsd-kind-icon">Drive</a>
+						<a href="../classes/driveservice.html" class="tsd-kind-icon">Drive<wbr>Service</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="ifileresource.html" class="tsd-kind-icon">IFile<wbr>Resource</a>
+						<a href="fileresource.html" class="tsd-kind-icon">File<wbr>Resource</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="imethodgetresult.html" class="tsd-kind-icon">IMethod<wbr>Get<wbr>Result</a>
+						<a href="options.html" class="tsd-kind-icon">Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="imethodgetresult.html#description" class="tsd-kind-icon">description</a>
+								<a href="options.html#contentfolder" class="tsd-kind-icon">content<wbr>Folder</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="imethodgetresult.html#id" class="tsd-kind-icon">id</a>
+								<a href="options.html#disabledroutes" class="tsd-kind-icon">disabled<wbr>Routes</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="imethodgetresult.html#link" class="tsd-kind-icon">link</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="imethodgetresult.html#mimetype" class="tsd-kind-icon">mime<wbr>Type</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="imethodgetresult.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="imethodgetresult.html#size" class="tsd-kind-icon">size</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="imethodgetresult.html#url" class="tsd-kind-icon">url</a>
+								<a href="options.html#router" class="tsd-kind-icon">router</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface">
-						<a href="imethoduploadresult.html" class="tsd-kind-icon">IMethod<wbr>Upload<wbr>Result</a>
+						<a href="resultget.html" class="tsd-kind-icon">Result<wbr>Get</a>
 					</li>
 					<li class=" tsd-kind-interface">
-						<a href="imodule.html" class="tsd-kind-icon">IModule</a>
-					</li>
-					<li class=" tsd-kind-interface">
-						<a href="ioptions.html" class="tsd-kind-icon">IOptions</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#drivemodule" class="tsd-kind-icon">Drive<wbr>Module</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="../globals.html#moduleexports" class="tsd-kind-icon">module<wbr>Exports</a>
+						<a href="resultupload.html" class="tsd-kind-icon">Result<wbr>Upload</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#drivemoduleroutes" class="tsd-kind-icon">drive<wbr>Module<wbr>Routes</a>
+						<a href="../index.html#drive" class="tsd-kind-icon">drive</a>
 					</li>
 					<li class=" tsd-kind-function">
-						<a href="../globals.html#example1" class="tsd-kind-icon">example1</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../globals.html#example2" class="tsd-kind-icon">example2</a>
+						<a href="../index.html#drivemoduleroutes" class="tsd-kind-icon">drive<wbr>Module<wbr>Routes</a>
 					</li>
 					<li class=" tsd-kind-object-literal">
-						<a href="../globals.html#routing_errors" class="tsd-kind-icon">ROUTING_<wbr>ERRORS</a>
+						<a href="../index.html#routing_errors" class="tsd-kind-icon">ROUTING_<wbr>ERRORS</a>
 					</li>
 				</ul>
 			</nav>
