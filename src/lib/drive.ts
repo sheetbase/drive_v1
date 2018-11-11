@@ -2,7 +2,7 @@ import { AddonRoutesOptions } from '@sheetbase/core-server';
 import md5 from 'blueimp-md5/js/md5.min';
 
 import { FileResource, ResultGet, ResultUpload, Options } from './types';
-import { driveModuleRoutes } from './routes';
+import { moduleRoutes } from './routes';
 
 export class DriveService {
     private options: Options;
@@ -16,7 +16,7 @@ export class DriveService {
     }
 
     registerRoutes(options?: AddonRoutesOptions) {
-        return driveModuleRoutes(this, options);
+        return moduleRoutes(this, options);
     }
 
     get(fileId: string): ResultGet {

@@ -29,7 +29,7 @@ function routingError(res: RouteResponse, code: string) {
     return res.error(code, message, status);
 }
 
-export function driveModuleRoutes(
+export function moduleRoutes(
     Drive: DriveService,
     options: AddonRoutesOptions,
 ): void {
