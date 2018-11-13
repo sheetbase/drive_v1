@@ -9,6 +9,7 @@ export class DriveService {
 
     constructor(options: Options) {
         this.options = options;
+        this.options.disabledRoutes = [];
     }
 
     getOptions(): Options {

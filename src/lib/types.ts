@@ -3,7 +3,7 @@ import { RouterService } from '@sheetbase/core-server';
 export interface Options {
     contentFolder: string;
     router?: RouterService | any;
-    disabledRoutes?: string[];
+    disabledRoutes?: string | string[];
 }
 
 export interface FileResource {
