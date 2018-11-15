@@ -25,10 +25,6 @@ declare const DriveModule: { Drive: any };
 const Drive = DriveModule.Drive;
 ```
 
-## Scopes
-
-`https://www.googleapis.com/auth/drive`
-
 ## Usage
 
 - Docs homepage: https://sheetbase.github.io/drive-server
