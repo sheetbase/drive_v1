@@ -25,6 +25,10 @@ declare const DriveModule: { Drive: any };
 const Drive = DriveModule.Drive;
 ```
 
+## Scopes
+
+`https://www.googleapis.com/auth/drive`
+
 ## Usage
 
 - Docs homepage: https://sheetbase.github.io/drive-server
@@ -91,8 +95,6 @@ export function example2(): void {
   Logger.log(result3);
   Logger.log(result4);
 }
-
-export { contentFolder };
 ```
 
 ## License

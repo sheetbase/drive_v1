@@ -89,11 +89,17 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="driveservice.html#_getfolderbyname" class="tsd-kind-icon">_get<wbr>Folder<wbr>ByName</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="driveservice.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="driveservice.html#getoptions" class="tsd-kind-icon">get<wbr>Options</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="driveservice.html#getfolderbyname" class="tsd-kind-icon">get<wbr>Folder<wbr>ByName</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="driveservice.html#haspermission" class="tsd-kind-icon">has<wbr>Permission</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="driveservice.html#registerroutes" class="tsd-kind-icon">register<wbr>Routes</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="driveservice.html#upload" class="tsd-kind-icon">upload</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-class tsd-is-private"><a href="driveservice.html#errors" class="tsd-kind-icon">errors</a></li>
 							</ul>
 						</section>
 					</div>
@@ -111,7 +117,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/11e9152/src/lib/drive.ts#L8">lib/drive.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L11">lib/drive.ts:11</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -133,24 +139,47 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/options.html" class="tsd-signature-type">Options</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/11e9152/src/lib/drive.ts#L8">lib/drive.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L7">lib/drive.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="_getfolderbyname" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _get<wbr>Folder<wbr>ByName</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">_get<wbr>Folder<wbr>ByName<span class="tsd-signature-symbol">(</span>parentFolder<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Folder</span>, folderName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Folder</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="get" class="tsd-anchor"></a>
+					<h3>get</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/resultget.html" class="tsd-signature-type">ResultGet</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/11e9152/src/lib/drive.ts#L143">lib/drive.ts:143</a></li>
+									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L62">lib/drive.ts:62</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>id: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/resultget.html" class="tsd-signature-type">ResultGet</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getfolderbyname" class="tsd-anchor"></a>
+					<h3>get<wbr>Folder<wbr>ByName</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Folder<wbr>ByName<span class="tsd-signature-symbol">(</span>parentFolder<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Folder</span>, folderName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Folder</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L169">lib/drive.ts:169</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -167,42 +196,25 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="get" class="tsd-anchor"></a>
-					<h3>get</h3>
+					<a name="haspermission" class="tsd-anchor"></a>
+					<h3>has<wbr>Permission</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>fileId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/resultget.html" class="tsd-signature-type">ResultGet</a></li>
+						<li class="tsd-signature tsd-kind-icon">has<wbr>Permission<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">File</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/11e9152/src/lib/drive.ts#L25">lib/drive.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L183">lib/drive.ts:183</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>fileId: <span class="tsd-signature-type">string</span></h5>
+									<h5>file: <span class="tsd-signature-type">File</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/resultget.html" class="tsd-signature-type">ResultGet</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getoptions" class="tsd-anchor"></a>
-					<h3>get<wbr>Options</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Options<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/options.html" class="tsd-signature-type">Options</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/11e9152/src/lib/drive.ts#L17">lib/drive.ts:17</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/options.html" class="tsd-signature-type">Options</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -210,19 +222,19 @@
 					<a name="registerroutes" class="tsd-anchor"></a>
 					<h3>register<wbr>Routes</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">register<wbr>Routes<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">AddonRoutesOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">register<wbr>Routes<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AddonRoutesOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/11e9152/src/lib/drive.ts#L21">lib/drive.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L21">lib/drive.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> options: <span class="tsd-signature-type">AddonRoutesOptions</span></h5>
+									<h5>options: <span class="tsd-signature-type">AddonRoutesOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -233,13 +245,13 @@
 					<a name="upload" class="tsd-anchor"></a>
 					<h3>upload</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">upload<span class="tsd-signature-symbol">(</span>fileResource<span class="tsd-signature-symbol">: </span><a href="../interfaces/fileresource.html" class="tsd-signature-type">FileResource</a>, customFolder<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, rename<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/resultupload.html" class="tsd-signature-type">ResultUpload</a></li>
+						<li class="tsd-signature tsd-kind-icon">upload<span class="tsd-signature-symbol">(</span>fileResource<span class="tsd-signature-symbol">: </span><a href="../interfaces/fileresource.html" class="tsd-signature-type">FileResource</a>, customFolder<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, rename<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, sharing<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/resultupload.html" class="tsd-signature-type">ResultUpload</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/11e9152/src/lib/drive.ts#L67">lib/drive.ts:67</a></li>
+									<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L90">lib/drive.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -253,10 +265,48 @@
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> rename: <span class="tsd-signature-type">string</span></h5>
 								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> sharing: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<ul class="tsd-parameters">
+									</ul>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/resultupload.html" class="tsd-signature-type">ResultUpload</a></h4>
 						</li>
 					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class tsd-is-private">
+					<a name="errors" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> errors</h3>
+					<div class="tsd-signature tsd-kind-icon">errors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L8">lib/drive.ts:8</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="errors.file_invalid_file_resource" class="tsd-anchor"></a>
+						<h3>file/invalid-<wbr>file-<wbr>resource</h3>
+						<div class="tsd-signature tsd-kind-icon">file/invalid-<wbr>file-<wbr>resource<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;No fileResource or invalid format.&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L10">lib/drive.ts:10</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="errors.file_no_id" class="tsd-anchor"></a>
+						<h3>file/no-<wbr>id</h3>
+						<div class="tsd-signature tsd-kind-icon">file/no-<wbr>id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;No id.&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/sheetbase/drive-server/blob/7af5259/src/lib/drive.ts#L9">lib/drive.ts:9</a></li>
+							</ul>
+						</aside>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -281,20 +331,23 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="driveservice.html#options" class="tsd-kind-icon">options</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="driveservice.html#_getfolderbyname" class="tsd-kind-icon">_get<wbr>Folder<wbr>ByName</a>
-							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="driveservice.html#get" class="tsd-kind-icon">get</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="driveservice.html#getoptions" class="tsd-kind-icon">get<wbr>Options</a>
+								<a href="driveservice.html#getfolderbyname" class="tsd-kind-icon">get<wbr>Folder<wbr>ByName</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="driveservice.html#haspermission" class="tsd-kind-icon">has<wbr>Permission</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="driveservice.html#registerroutes" class="tsd-kind-icon">register<wbr>Routes</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="driveservice.html#upload" class="tsd-kind-icon">upload</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-private">
+								<a href="driveservice.html#errors" class="tsd-kind-icon">errors</a>
 							</li>
 						</ul>
 					</li>
@@ -314,12 +367,6 @@
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="../index.html#drive" class="tsd-kind-icon">drive</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="../index.html#moduleroutes" class="tsd-kind-icon">module<wbr>Routes</a>
-					</li>
-					<li class=" tsd-kind-object-literal">
-						<a href="../index.html#routing_errors" class="tsd-kind-icon">ROUTING_<wbr>ERRORS</a>
 					</li>
 				</ul>
 			</nav>

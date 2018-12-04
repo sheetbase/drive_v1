@@ -44,5 +44,3 @@ export function example2(): void {
     Logger.log(result3);
     Logger.log(result4);
 }
-
-export { contentFolder };
