@@ -32,7 +32,7 @@ const DriveFile = () => ({
     getMimeType: () => 'text/plain',
     getDescription: () => 'My file 1 ...',
     getSize: () => 12345,
-    getUrl: () => 'https://drive.google.com/file-id-xxx',
+    getUrl: () => 'https://drive.google.com/storage-id-xxx',
     getSharingAccess: () => 'ANYONE',
     getParents: () => DriveFolderIterator(),
     setSharing: () => null,
@@ -119,34 +119,40 @@ describe('Routes test', () => {
         ).to.throw();
     });
 
-    it('#registerRoutes should register all routes (default)', () => {
+    it('#registerRoutes should have default disable routes', () => {
         Drive.registerRoutes({ router });
-        expect(routerRecorder).to.have.property('GET:/file');
-        expect(routerRecorder).to.have.property('POST:/file');
-        expect(routerRecorder).to.have.property('PUT:/file');
+        const disabledRoutes = Sheetbase.Option.getDisabledRoutes();
+        expect(disabledRoutes).to.eql(['post:/storage', 'put:/storage']);
     });
 
-    it('#registerRoutes should disable route POST /file', () => {
+    it('#registerRoutes should disable route GET /storage (also override default)', () => {
         Drive.registerRoutes({
-            router, disabledRoutes: ['post:/file'],
+            router, disabledRoutes: ['get:/storage'],
         });
         const disabledRoutes = Sheetbase.Option.getDisabledRoutes();
-        expect(disabledRoutes).to.eql(['post:/file']);
+        expect(disabledRoutes.indexOf('get:/storage') > -1).to.equal(true);
+    });
+
+    it('#registerRoutes should register all routes', () => {
+        Drive.registerRoutes({ router });
+        expect(routerRecorder).to.have.property('GET:/storage');
+        expect(routerRecorder).to.have.property('POST:/storage');
+        expect(routerRecorder).to.have.property('PUT:/storage');
     });
 
     it('#registerRoutes should use different endpoint', () => {
         Drive.registerRoutes({
-            router, endpoint: 'filer',
+            router, endpoint: 'file',
         });
-        expect(routerRecorder).to.not.have.property('GET:/file');
-        expect(routerRecorder).to.have.property('GET:/filer');
+        expect(routerRecorder).to.not.have.property('GET:/storage');
+        expect(routerRecorder).to.have.property('GET:/file');
     });
 
     it('#registerRoutes should have proper middlewares', () => {
         Drive.registerRoutes({
             router,
         });
-        const handlers = routerRecorder['GET:/file'];
+        const handlers = routerRecorder['GET:/storage'];
         const [ middleware, handler ] = handlers;
         expect(handlers.length).to.equal(2);
         expect(middleware instanceof Function).to.equal(true);
@@ -161,7 +167,7 @@ describe('Routes test', () => {
                 (req, res, next) => next(),
             ],
         });
-        const handlers = routerRecorder['GET:/file'];
+        const handlers = routerRecorder['GET:/storage'];
         expect(handlers.length).to.equal(3);
     });
 
@@ -172,6 +178,20 @@ describe('Helper methods test', () => {
     it('#getFolderByName');
 
     it('#hasPermission');
+
+    it('#base64Breakdown should throw error, malform', () => {
+        expect(
+            Drive.base64Breakdown.bind(Drive, 'xxx'),
+        ).to.throw('Malform base64 data.');
+    });
+
+    it('#base64Breakdown should work', () => {
+        const result = Drive.base64Breakdown('data:abc;base64,xxx');
+        expect(result).to.eql({
+            mimeType: 'abc',
+            base64Content: 'xxx',
+        });
+    });
 
 });
 

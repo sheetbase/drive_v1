@@ -6,8 +6,8 @@ export interface Options {
 
 export interface FileResource {
     name: string;
-    mimeType: string;
-    base64Content: string;
+    base64Data: string;
+    size?: number;
 }
 
 export interface ResultGet {

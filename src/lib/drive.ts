@@ -21,8 +21,11 @@ export class DriveService {
     registerRoutes(options: AddonRoutesOptions): void {
         const {
             router,
-            endpoint = 'file',
-            disabledRoutes = [],
+            endpoint = 'storage',
+            disabledRoutes = [
+                'post:/' + endpoint,
+                'put:/' + endpoint,
+            ],
             middlewares = [(req, res, next) => next()],
         } = options;
 
@@ -96,8 +99,8 @@ export class DriveService {
         if (
             !fileResource ||
             !(fileResource instanceof Object) ||
-            !fileResource.base64Content ||
-            !fileResource.mimeType ||
+            !fileResource.base64Data ||
+            !fileResource.size ||
             !fileResource.name
         ) {
             throw new Error('file/invalid-file-resource');
@@ -136,14 +139,17 @@ export class DriveService {
             fileName = Utilities.getUuid() + '.' + fileExt;
         }
 
+        // mimeType and base64Content
+        const { mimeType: fileMimeType, base64Content } = this.base64Breakdown(fileResource.base64Data);
+
         // save the file
         const newFile = folder.createFile(
             Utilities.newBlob(
                 Utilities.base64Decode(
-                    fileResource.base64Content,
+                    base64Content,
                     Utilities.Charset.UTF_8,
                 ),
-                fileResource.mimeType,
+                fileMimeType,
                 fileName,
             ) as any,
         );
@@ -201,6 +207,17 @@ export class DriveService {
         }
 
         return true;
+    }
+
+    base64Breakdown(base64Data: string) {
+        const [ mimeTypeData, base64Content ] = base64Data.split(';base64,');
+        if (!mimeTypeData || !base64Content) {
+            throw new Error('Malform base64 data.');
+        }
+        return {
+            mimeType: mimeTypeData.replace('data:', ''),
+            base64Content,
+        };
     }
 
 }
