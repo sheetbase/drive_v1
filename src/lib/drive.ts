@@ -1,4 +1,4 @@
-import { AddonRoutesOptions, RoutingErrors } from '@sheetbase/core-server';
+import { AddonRoutesOptions, RoutingErrors } from '@sheetbase/server';
 import md5 from 'blueimp-md5/js/md5.min';
 
 import { FileResource, ResultGet, ResultUpload, Options } from './types';

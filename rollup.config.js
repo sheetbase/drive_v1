@@ -5,12 +5,12 @@ export default {
     input: './dist/esm3/public_api.js',
     output: [
         {
-            file: './dist/fesm3/sheetbase-drive-server.js',
+            file: './dist/fesm3/sheetbase-drive.js',
             format: 'esm',
             sourcemap: true
         },
         {
-            file: './dist/bundles/sheetbase-drive-server.umd.js',
+            file: './dist/bundles/sheetbase-drive.umd.js',
             format: 'umd',
             sourcemap: true,
             name: 'Drive'

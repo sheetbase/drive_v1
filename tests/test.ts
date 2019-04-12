@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { describe, it } from 'mocha';
 import * as sinon from 'sinon';
 
-import { sheetbase } from '@sheetbase/core-server';
+import { sheetbase } from '@sheetbase/server';
 
 import { drive } from '../src/public_api';
 
