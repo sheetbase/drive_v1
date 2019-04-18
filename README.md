@@ -1,19 +1,19 @@
-# Sheetbase Module: @sheetbase/drive-server
+# Sheetbase Module: @sheetbase/drive
 
 File management with Drive for Sheetbase backend app.
 
 <!-- <block:header> -->
 
-[![Build Status](https://travis-ci.com/sheetbase/drive-server.svg?branch=master)](https://travis-ci.com/sheetbase/drive-server) [![Coverage Status](https://coveralls.io/repos/github/sheetbase/drive-server/badge.svg?branch=master)](https://coveralls.io/github/sheetbase/drive-server?branch=master) [![NPM](https://img.shields.io/npm/v/@sheetbase/drive-server.svg)](https://www.npmjs.com/package/@sheetbase/drive-server) [![License][license_badge]][license_url] [![clasp][clasp_badge]][clasp_url] [![Support me on Patreon][patreon_badge]][patreon_url] [![PayPal][paypal_donate_badge]][paypal_donate_url] [![Ask me anything][ask_me_badge]][ask_me_url]
+[![Build Status](https://travis-ci.com/sheetbase/drive.svg?branch=master)](https://travis-ci.com/sheetbase/drive) [![Coverage Status](https://coveralls.io/repos/github/sheetbase/drive/badge.svg?branch=master)](https://coveralls.io/github/sheetbase/drive?branch=master) [![NPM](https://img.shields.io/npm/v/@sheetbase/drive.svg)](https://www.npmjs.com/package/@sheetbase/drive) [![License][license_badge]][license_url] [![clasp][clasp_badge]][clasp_url] [![Support me on Patreon][patreon_badge]][patreon_url] [![PayPal][paypal_donate_badge]][paypal_donate_url] [![Ask me anything][ask_me_badge]][ask_me_url]
 
 <!-- </block:header> -->
 
 ## Install
 
-Using npm: `npm install --save @sheetbase/drive-server`
+Using npm: `npm install --save @sheetbase/drive`
 
 ```ts
-import * as Drive from "@sheetbase/drive-server";
+import * as Drive from "@sheetbase/drive";
 ```
 
 As a library: `1mbpy4unOm6RTKzU_awPJnt9mNncpFPXR9f3redN5YavB8PSYUDKe8Fo8`
@@ -31,80 +31,36 @@ const Drive = DriveModule.Drive;
 
 ## Usage
 
-- Docs homepage: https://sheetbase.github.io/drive-server
+- Docs homepage: https://sheetbase.github.io/drive
 
-- API reference: https://sheetbase.github.io/drive-server/api
+- API reference: https://sheetbase.github.io/drive/api
 
-### Examples
+<!-- <block:body> -->
+
+## Getting started
+
+Install: `npm install --save @sheetbase/drive`
+
+Usage:
 
 ```ts
-import * as Drive from "./public_api";
+import { drive } from "@sheetbase/drive";
 
-// content folder: https://drive.google.com/drive/folders/1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY?usp=sharing
-const contentFolder = "1PZm1HEpCNUV3gR5DVq1PuULLs_dnvhdY";
-
-function load_() {
-  return Drive.drive({ contentFolder });
-}
-
-export function example1(): void {
-  const Drive = load_();
-
-  const text = Drive.get("1QKOvTtyGgZdY_QD6KHZ662ScNhZQhgtI"); // file.txt
-  const image = Drive.get("147iOWt3-4aNaTqSrGLP8Wl-DgPxCaD1t"); // image.jpg
-  Logger.log(text);
-  Logger.log(image);
-}
-
-export function example2(): void {
-  const Drive = load_();
-
-  const result1 = Drive.upload({
-    name: "file.txt",
-    mimeType: "text/plain",
-    base64Content: "SGVsbG8sIHdvcmxkIQ=="
-  });
-  const result2 = Drive.upload(
-    {
-      name: "file.txt",
-      mimeType: "text/plain",
-      base64Content: "SGVsbG8sIHdvcmxkIQ=="
-    },
-    "my_folder"
-  );
-  const result3 = Drive.upload(
-    {
-      name: "file.txt",
-      mimeType: "text/plain",
-      base64Content: "SGVsbG8sIHdvcmxkIQ=="
-    },
-    null,
-    "AUTO"
-  );
-  const result4 = Drive.upload(
-    {
-      name: "file.txt",
-      mimeType: "text/plain",
-      base64Content: "SGVsbG8sIHdvcmxkIQ=="
-    },
-    null,
-    "MD5"
-  );
-  Logger.log(result1);
-  Logger.log(result2);
-  Logger.log(result3);
-  Logger.log(result4);
-}
+const Drive = drive({
+  /* configs */
+});
 ```
+
+<!-- </block:body> -->
 
 ## License
 
-**@sheetbase/drive-server** is released under the [MIT](https://github.com/sheetbase/drive-server/blob/master/LICENSE) license.
+**@sheetbase/drive** is released under the [MIT](https://github.com/sheetbase/drive/blob/master/LICENSE) license.
 
 <!-- <block:footer> -->
 
 [license_badge]: https://img.shields.io/github/license/mashape/apistatus.svg
-[license_url]: https://github.com/sheetbase/drive-server/blob/master/LICENSE
+[license_url]: https://github.com/sheetbase/drive/blob/master/LICENSE
 [clasp_badge]: https://img.shields.io/badge/built%20with-clasp-4285f4.svg
 [clasp_url]: https://github.com/google/clasp
 [patreon_badge]: https://lamnhan.github.io/assets/images/badges/patreon.svg

@@ -1,3 +1,3 @@
-# @sheetbase/drive-server
+# @sheetbase/drive
 
-- [API Reference](https://sheetbase.github.io/drive-server/api)
+- [API Reference](https://sheetbase.github.io/drive/api)
