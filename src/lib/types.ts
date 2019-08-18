@@ -1,23 +1,34 @@
 export interface Options {
-    contentFolder: string;
-    urlPrefix?: string;
-    urlSuffix?: string;
+  // the upload folder id
+  uploadFolder: string;
+  // nest in year & month folder
+  nested?: boolean;
+  // customize the response url
+  urlPrefix?: string;
+  urlSuffix?: string;
 }
 
-export interface FileResource {
-    name: string;
-    base64Data: string;
-    size?: number;
+export interface UploadResource {
+  name: string;
+  base64Data: string;
+  size?: number;
 }
 
-export interface ResultGet {
-    id: string;
-    name: string;
-    mimeType: string;
-    description: string;
-    size: number;
-    link: string;
-    url: string;
+export interface FileInfo {
+  id: string;
+  name: string;
+  mimeType: string;
+  description: string;
+  size: number;
+  link: string;
+  url: string;
 }
 
-export interface ResultUpload extends ResultGet {}
+export type RenamePolicy = 'AUTO' | 'HASH';
+
+export type SharingMode = 'PUBLIC' | 'PRIVATE';
+
+export interface SharingConfig {
+  access?: string;
+  permission?: string;
+}
