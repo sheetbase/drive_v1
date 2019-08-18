@@ -8,22 +8,30 @@ import {
   FileInfo,
   RenamePolicy,
   SharingConfig,
-  SharingMode,
+  SharingPreset,
+  FileSharing,
+  FileUpdateData,
 } from './types';
 
 export class DriveService {
   private options: Options;
   private errors: RoutingErrors = {
-    'file/not-found': 'File not found.',
+    'file/no-file': 'File not found (no VIEW permission or trashed).',
+    'file/no-edit': 'No EDIT permission.',
     'file/invalid-upload-resource': 'Invalid upload resource.',
     'file/invalid-size': 'The file is too big.',
     'file/invalid-type': 'The file format is not supported.',
   };
 
   private req: RouteRequest = null;
-  private auth: any = null;
+  private auth: { uid?: string, email?: string } = null;
 
-  private sharingModes: {[name: string]: SharingConfig} = {
+  // for viewing the file only
+  // PUBLIC: anyone
+  // PRIVATE:
+  // only me (the developer)
+  // and the uploader (if users login with their Google email)
+  private sharingPresets: {[preset: string]: SharingConfig} = {
     PUBLIC: { access: 'ANYONE_WITH_LINK', permission: 'VIEW' },
     PRIVATE: { access: 'PRIVATE', permission: 'VIEW' },
   };
@@ -34,15 +42,6 @@ export class DriveService {
       urlBuilder: ['https://drive.google.com/uc?id='],
       ... options,
     };
-  }
-
-  private base64StringBreakdown(base64String: string) {
-    const [ mimeType, base64Content ] = base64String
-      .replace('data:', '').split(';base64,');
-    if (!mimeType || !base64Content) {
-      throw new Error('Malform base64 data.');
-    }
-    return { mimeType, base64Content };
   }
 
   setIntegration<K extends keyof Intergration, Value>(key: K, value: Value): DriveService {
@@ -63,6 +62,10 @@ export class DriveService {
     }
   }
 
+  /**
+   * routes
+   */
+
   registerRoutes(options: AddonRoutesOptions): void {
     const {
       router,
@@ -70,6 +73,7 @@ export class DriveService {
       disabledRoutes = [
         'post:/' + endpoint,
         'put:/' + endpoint,
+        'delete:/' + endpoint,
       ],
       middlewares = [(req, res, next) => next()] as RouteHandler[],
     } = options;
@@ -104,18 +108,50 @@ export class DriveService {
         renamePolicy,
         sharing,
       } = req.body;
-      let result: any = {};
+      let result: any;
       try {
         result = this.uploadFile(uploadResource, customFolder, renamePolicy, sharing);
       } catch (code) {
         return res.error(code);
       }
-      return res.success(result);
+      return res.success(this.getFileInfo(result));
     });
 
-    // update a file props
+    // update a file
+    router.post('/' + endpoint, ... middlewares, (req, res) => {
+      const { id, data } = req.body;
+      let result: any;
+      try {
+        result = this.updateFile(id, data);
+      } catch (code) {
+        return res.error(code);
+      }
+      return res.success(this.getFileInfo(result));
+    });
 
     // delete a file
+    router.delete('/' + endpoint, ... middlewares, (req, res) => {
+      const { id } = req.body;
+      try {
+        this.removeFile(id);
+      } catch (code) {
+        return res.error(code);
+      }
+      return res.success({ done: true });
+    });
+  }
+
+  /**
+   * helpers
+   */
+
+  private base64StringBreakdown(base64String: string) {
+    const [ mimeType, base64Content ] = base64String
+      .replace('data:', '').split(';base64,');
+    if (!mimeType || !base64Content) {
+      throw new Error('Malform base64 data.');
+    }
+    return { mimeType, base64Content };
   }
 
   // check if the file is in the upload folder
@@ -128,8 +164,8 @@ export class DriveService {
     return (parentIds.indexOf(this.options.uploadFolder) > -1);
   }
 
-  // check if the file is public
-  isFilePublic(file: GoogleAppsScript.Drive.File): boolean {
+  // check if the file is shared publicly
+  isFileShared(file: GoogleAppsScript.Drive.File): boolean {
     const access = file.getSharingAccess();
     return (
       access === DriveApp.Access.ANYONE ||
@@ -170,8 +206,8 @@ export class DriveService {
     return name + '.' + ext;
   }
 
-  getSharingConfig(mode: SharingMode) {
-    return this.sharingModes[mode];
+  getSharingPreset(preset: SharingPreset) {
+    return this.sharingPresets[preset];
   }
 
   getFileInfo(file: GoogleAppsScript.Drive.File): FileInfo {
@@ -213,34 +249,91 @@ export class DriveService {
     return folder;
   }
 
+  createFolderByYearAndMonth(
+    parentFolder: GoogleAppsScript.Drive.Folder,
+  ) {
+    const date = new Date();
+    const year = '' + date.getFullYear();
+    let month: any = date.getMonth() + 1;
+      month = '' + (month < 10 ? '0' + month : month);
+    const folder = this.getFolderByName(year, parentFolder);
+    return this.getFolderByName(month, folder);
+  }
+
+  createFileFromBase64Content(
+    parentFolder: GoogleAppsScript.Drive.Folder,
+    fileName: string,
+    mimeType: string,
+    base64Content: string,
+  ) {
+    const data = Utilities.base64Decode(base64Content, Utilities.Charset.UTF_8);
+    const blob = Utilities.newBlob(data, mimeType, fileName);
+    return parentFolder.createFile(blob);
+  }
+
+  setFileSharing(
+    file: GoogleAppsScript.Drive.File,
+    sharing: FileSharing = 'PRIVATE',
+  ) {
+    const { access, permission } = (typeof sharing === 'string') ? this.getSharingPreset(sharing) : sharing;
+    return file.setSharing(
+      DriveApp.Access[access.toUpperCase()],
+      DriveApp.Permission[permission.toUpperCase()],
+    );
+  }
+
+  setEditForAuthUser(file: GoogleAppsScript.Drive.File) {
+    const { uid, email } = this.auth;
+    return file.addEditors([ email, uid + '@sheetbase.app' ]);
+  }
+
+  /**
+   * security checker
+   */
+
+  hasViewPermission(file: GoogleAppsScript.Drive.File) {
+    return (
+      this.isFileShared(file) || // shared publicly
+      this.hasEditPermission(file) // for logged in user
+    );
+  }
+
+  hasEditPermission(file: GoogleAppsScript.Drive.File) {
+    return (
+      !!this.auth &&
+      (
+        file.getAccess(this.auth.email) === GoogleAppsScript.Drive.Permission.EDIT ||
+        file.getAccess(this.auth.uid + '@sheetbase.app') === GoogleAppsScript.Drive.Permission.EDIT
+      )
+    );
+  }
+
   /**
    * main
    */
 
   getFileById(id: string) {
-    const file = !!id ? DriveApp.getFileById(id) : null;
-    return (
-      !!file &&
-      (
-        this.isFileAvailable(file) &&
-        this.isFilePublic(file)
-      )
-    ) ? file : null;
+    const file = DriveApp.getFileById(id);
+    if (
+      file.isTrashed() || // file in the trash
+      !this.hasViewPermission(file) // no view permission
+    ) {
+      throw new Error('file/no-file');
+    }
+    return file;
   }
 
   getFileInfoById(id: string) {
-    const file = this.getFileById(id);
-    if (!file) {
-      throw new Error('file/not-found');
-    }
-    return this.getFileInfo(file);
+    return this.getFileInfo(
+      this.getFileById(id),
+    );
   }
 
   uploadFile(
     uploadResource: UploadResource,
     customFolder?: string,
     renamePolicy?: RenamePolicy,
-    sharing: SharingMode | SharingConfig = 'PRIVATE',
+    sharing: FileSharing = 'PRIVATE',
   ) {
     // check input data
     if (
@@ -264,33 +357,55 @@ export class DriveService {
     }
 
     // get the upload folder
-    const fileName = this.getFileName(name, renamePolicy);
     let folder = this.getUploadFolder();
     if (customFolder) {
       folder = this.getFolderByName(customFolder, folder);
     } else if (!!this.options.nested) {
-      const date = new Date();
-      const year = '' + date.getFullYear();
-      let month: any = date.getMonth() + 1;
-        month = '' + (month < 10 ? '0' + month : month);
-      folder = this.getFolderByName(year, folder);
-      folder = this.getFolderByName(month, folder);
+      folder = this.createFolderByYearAndMonth(folder);
     }
 
     // save the file
-    const data = Utilities.base64Decode(base64Content, Utilities.Charset.UTF_8);
-    const blob = Utilities.newBlob(data, mimeType, fileName);
-    const file = folder.createFile(blob);
-
+    const fileName = this.getFileName(name, renamePolicy);
+    const file = this.createFileFromBase64Content(folder, fileName, mimeType, base64Content);
     // set sharing
-    const { access, permission } = (typeof sharing === 'string') ? this.getSharingConfig(sharing) : sharing;
-    file.setSharing(
-      DriveApp.Access[access.toUpperCase()],
-      DriveApp.Permission[permission.toUpperCase()],
-    );
+    this.setFileSharing(file, sharing);
+    // set edit security
+    if (!!this.auth) {
+      this.setEditForAuthUser(file);
+    }
 
-    // response
+    // return
     return file;
+  }
+
+  updateFile(id: string, data: FileUpdateData = {}) {
+    let file = this.getFileById(id);
+    if (!this.hasEditPermission(file)) {
+      throw new Error('file/no-edit');
+    }
+    // update data
+    const { name, description, sharing, content } = data;
+    if (!!name) {
+      file.setName(name);
+    }
+    if (!!description) {
+      file.setDescription(description);
+    }
+    if (!!sharing) {
+      file = this.setFileSharing(file, sharing);
+    }
+    if (!!content) {
+      file.setContent(content);
+    }
+    return file;
+  }
+
+  removeFile(id: string) {
+    const file = this.getFileById(id);
+    if (!this.hasEditPermission(file)) {
+      throw new Error('file/no-edit');
+    }
+    return file.setTrashed(true);
   }
 
 }

@@ -32,9 +32,16 @@ export interface FileInfo {
 
 export type RenamePolicy = 'AUTO' | 'HASH';
 
-export type SharingMode = 'PUBLIC' | 'PRIVATE';
-
+export type FileSharing = SharingPreset | SharingConfig;
+export type SharingPreset = 'PUBLIC' | 'PRIVATE';
 export interface SharingConfig {
   access?: string;
   permission?: string;
+}
+
+export interface FileUpdateData {
+  name?: string;
+  description?: string;
+  sharing?: FileSharing;
+  content?: string; // text file only
 }
