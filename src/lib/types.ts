@@ -1,17 +1,22 @@
-export interface Options {
+export interface Options extends Intergration {
   // the upload folder id
   uploadFolder: string;
   // nest in year & month folder
   nested?: boolean;
+  // limits
+  allowTypes?: string[]; // mimetype list
+  maxSize?: number; // MB
   // customize the response url
-  urlPrefix?: string;
-  urlSuffix?: string;
+  urlBuilder?: string[] | {(id: string): string};
+}
+
+export interface Intergration {
+  AuthToken?: any;
 }
 
 export interface UploadResource {
   name: string;
   base64Data: string;
-  size?: number;
 }
 
 export interface FileInfo {
@@ -22,6 +27,7 @@ export interface FileInfo {
   size: number;
   link: string;
   url: string;
+  downloadUrl: string;
 }
 
 export type RenamePolicy = 'AUTO' | 'HASH';

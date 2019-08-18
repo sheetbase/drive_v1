@@ -1,14 +1,27 @@
-import { AddonRoutesOptions, RoutingErrors } from '@sheetbase/server';
+import { AddonRoutesOptions, RoutingErrors, RouteRequest, RouteHandler } from '@sheetbase/server';
 import md5 from 'blueimp-md5/js/md5.min';
 
-import { Options, UploadResource, FileInfo, RenamePolicy, SharingConfig, SharingMode } from './types';
+import {
+  Options,
+  Intergration,
+  UploadResource,
+  FileInfo,
+  RenamePolicy,
+  SharingConfig,
+  SharingMode,
+} from './types';
 
 export class DriveService {
   private options: Options;
   private errors: RoutingErrors = {
     'file/not-found': 'File not found.',
     'file/invalid-upload-resource': 'Invalid upload resource.',
+    'file/invalid-size': 'The file is too big.',
+    'file/invalid-type': 'The file format is not supported.',
   };
+
+  private req: RouteRequest = null;
+  private auth: any = null;
 
   private sharingModes: {[name: string]: SharingConfig} = {
     PUBLIC: { access: 'ANYONE_WITH_LINK', permission: 'VIEW' },
@@ -17,10 +30,28 @@ export class DriveService {
 
   constructor(options: Options) {
     this.options = {
-      urlPrefix: 'https://drive.google.com/uc?id=',
-      urlSuffix: '',
+      maxSize: 100,
+      urlBuilder: ['https://drive.google.com/uc?id='],
       ... options,
     };
+  }
+
+  setIntegration<K extends keyof Intergration, Value>(key: K, value: Value): DriveService {
+    this.options[key] = value;
+    return this;
+  }
+
+  setRequest(request: RouteRequest) {
+    // req object
+    this.req = request;
+    // auth object
+    const AuthToken = this.options.AuthToken;
+    const idToken = !!request ? (
+      request.query['idToken'] || request.body['idToken']
+    ) : null;
+    if (!!idToken && !!AuthToken) {
+      this.auth = AuthToken.decodeIdToken(idToken);
+    }
   }
 
   registerRoutes(options: AddonRoutesOptions): void {
@@ -31,12 +62,18 @@ export class DriveService {
         'post:/' + endpoint,
         'put:/' + endpoint,
       ],
-      middlewares = [(req, res, next) => next()],
+      middlewares = [(req, res, next) => next()] as RouteHandler[],
     } = options;
 
     // register errors & disabled routes
     router.setDisabled(disabledRoutes);
     router.setErrors(this.errors);
+
+    // register request for security
+    middlewares.push((req, res, next) => {
+      this.setRequest(req);
+      return next();
+    });
 
     // get file information
     router.get('/' + endpoint, ... middlewares, (req, res) => {
@@ -71,13 +108,16 @@ export class DriveService {
   }
 
   getFileInfo(file: GoogleAppsScript.Drive.File): FileInfo {
-    const { urlPrefix, urlSuffix } = this.options;
+    let { urlBuilder } = this.options;
+    urlBuilder = (urlBuilder instanceof Array) ?
+      (id: string) => (urlBuilder[0] + id +  urlBuilder[1]) : urlBuilder;
     const fileId = file.getId();
     const name = file.getName();
     const mimeType = file.getMimeType();
     const description = file.getDescription();
     const size = file.getSize();
     const link = file.getUrl();
+    const url = urlBuilder(fileId);
     return {
       id: fileId,
       name,
@@ -85,7 +125,8 @@ export class DriveService {
       description,
       size,
       link,
-      url: urlPrefix + fileId +  urlSuffix,
+      url,
+      downloadUrl: url + '&export=download',
     };
   }
 
@@ -124,6 +165,17 @@ export class DriveService {
     );
   }
 
+  isValidFileType(mimeType: string) {
+    const { allowTypes } = this.options;
+    return !!allowTypes && allowTypes[mimeType] < 0;
+  }
+
+  isValidFileSize(sizeBytes: number) {
+    const { maxSize } = this.options;
+    const sizeMB = sizeBytes / 1048576;
+    return !!maxSize && sizeMB > maxSize;
+  }
+
   getUploadFolder() {
     const { uploadFolder } = this.options;
     return  DriveApp.getFolderById(uploadFolder);
@@ -147,7 +199,7 @@ export class DriveService {
   }
 
   getSharingConfig(mode: SharingMode) {
-    return ;
+    return this.sharingModes[mode];
   }
 
   getFileById(id: string) {
@@ -183,9 +235,17 @@ export class DriveService {
       throw new Error('file/invalid-upload-resource');
     }
 
-    // option
-    const { name, base64Data, size } = uploadResource;
+    // data
+    const { name, base64Data } = uploadResource;
     const { mimeType, base64Content } = this.base64StringBreakdown(base64Data);
+
+    // check input
+    if (!this.isValidFileType(mimeType)) {
+      throw new Error('file/invalid-type');
+    }
+    if (!this.isValidFileSize(base64Content.replace(/\=/g, '').length * 0.75)) {
+      throw new Error('file/invalid-size');
+    }
 
     // get the upload folder
     const fileName = this.getFileName(name, renamePolicy);
@@ -207,7 +267,7 @@ export class DriveService {
     const file = folder.createFile(blob);
 
     // set sharing
-    const { access, permission } = (typeof sharing === 'string') ? this.sharingModes[sharing] : sharing;
+    const { access, permission } = (typeof sharing === 'string') ? this.getSharingConfig(sharing) : sharing;
     file.setSharing(
       DriveApp.Access[access.toUpperCase()],
       DriveApp.Permission[permission.toUpperCase()],
@@ -218,14 +278,12 @@ export class DriveService {
   }
 
   private base64StringBreakdown(base64String: string) {
-    const [ mimeType, base64Content ] = base64String.split(';base64,');
+    const [ mimeType, base64Content ] = base64String
+      .replace('data:', '').split(';base64,');
     if (!mimeType || !base64Content) {
       throw new Error('Malform base64 data.');
     }
-    return {
-      mimeType: mimeType.replace('data:', ''),
-      base64Content,
-    };
+    return { mimeType, base64Content };
   }
 
 }
