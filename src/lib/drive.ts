@@ -36,6 +36,15 @@ export class DriveService {
     };
   }
 
+  private base64StringBreakdown(base64String: string) {
+    const [ mimeType, base64Content ] = base64String
+      .replace('data:', '').split(';base64,');
+    if (!mimeType || !base64Content) {
+      throw new Error('Malform base64 data.');
+    }
+    return { mimeType, base64Content };
+  }
+
   setIntegration<K extends keyof Intergration, Value>(key: K, value: Value): DriveService {
     this.options[key] = value;
     return this;
@@ -88,7 +97,7 @@ export class DriveService {
     });
 
     // upload a file
-    const uploader = (req, res) => {
+    router.put('/' + endpoint, ... middlewares, (req, res) => {
       const {
         uploadResource,
         customFolder,
@@ -102,9 +111,67 @@ export class DriveService {
         return res.error(code);
       }
       return res.success(result);
-    };
-    router.post('/' + endpoint, ... middlewares, uploader);
-    router.put('/' + endpoint, ... middlewares, uploader);
+    });
+
+    // update a file props
+
+    // delete a file
+  }
+
+  // check if the file is in the upload folder
+  isFileAvailable(file: GoogleAppsScript.Drive.File): boolean {
+    const parentIds: string[] = [];
+    const parents = file.getParents();
+    while (parents.hasNext()) {
+      parentIds.push(parents.next().getId());
+    }
+    return (parentIds.indexOf(this.options.uploadFolder) > -1);
+  }
+
+  // check if the file is public
+  isFilePublic(file: GoogleAppsScript.Drive.File): boolean {
+    const access = file.getSharingAccess();
+    return (
+      access === DriveApp.Access.ANYONE ||
+      access === DriveApp.Access.ANYONE_WITH_LINK
+    );
+  }
+
+  isValidFileType(mimeType: string) {
+    const { allowTypes } = this.options;
+    return !allowTypes || allowTypes[mimeType] > -1;
+  }
+
+  isValidFileSize(sizeBytes: number) {
+    const { maxSize } = this.options;
+    const sizeMB = sizeBytes / 1048576;
+    return !maxSize || sizeMB <= maxSize;
+  }
+
+  getUploadFolder() {
+    const { uploadFolder } = this.options;
+    return  DriveApp.getFolderById(uploadFolder);
+  }
+
+  getFileName(fileName: string, rename?: RenamePolicy) {
+    const fileNameArr = fileName.split('.');
+    // extract name & extension
+    const ext = fileNameArr.pop();
+    let name = fileNameArr.join('.');
+    // rename
+    if (!!rename) {
+      if (rename === 'AUTO') {
+        name = Utilities.getUuid();
+      }
+      if (rename === 'HASH') {
+        name = md5(fileName);
+      }
+    }
+    return name + '.' + ext;
+  }
+
+  getSharingConfig(mode: SharingMode) {
+    return this.sharingModes[mode];
   }
 
   getFileInfo(file: GoogleAppsScript.Drive.File): FileInfo {
@@ -146,61 +213,9 @@ export class DriveService {
     return folder;
   }
 
-  // check if the file is in the upload folder
-  isFileAvailable(file: GoogleAppsScript.Drive.File): boolean {
-    const parentIds: string[] = [];
-    const parents = file.getParents();
-    while (parents.hasNext()) {
-      parentIds.push(parents.next().getId());
-    }
-    return (parentIds.indexOf(this.options.uploadFolder) > -1);
-  }
-
-  // check if the file is public
-  isFilePublic(file: GoogleAppsScript.Drive.File): boolean {
-    const access = file.getSharingAccess();
-    return (
-      access === DriveApp.Access.ANYONE ||
-      access === DriveApp.Access.ANYONE_WITH_LINK
-    );
-  }
-
-  isValidFileType(mimeType: string) {
-    const { allowTypes } = this.options;
-    return !!allowTypes && allowTypes[mimeType] < 0;
-  }
-
-  isValidFileSize(sizeBytes: number) {
-    const { maxSize } = this.options;
-    const sizeMB = sizeBytes / 1048576;
-    return !!maxSize && sizeMB > maxSize;
-  }
-
-  getUploadFolder() {
-    const { uploadFolder } = this.options;
-    return  DriveApp.getFolderById(uploadFolder);
-  }
-
-  getFileName(fileName: string, rename?: RenamePolicy) {
-    const fileNameArr = fileName.split('.');
-    // extract name & extension
-    const ext = fileNameArr.pop();
-    let name = fileNameArr.join('.');
-    // rename
-    if (!!rename) {
-      if (rename === 'AUTO') {
-        name = Utilities.getUuid();
-      }
-      if (rename === 'HASH') {
-        name = md5(fileName);
-      }
-    }
-    return name + '.' + ext;
-  }
-
-  getSharingConfig(mode: SharingMode) {
-    return this.sharingModes[mode];
-  }
+  /**
+   * main
+   */
 
   getFileById(id: string) {
     const file = !!id ? DriveApp.getFileById(id) : null;
@@ -227,6 +242,7 @@ export class DriveService {
     renamePolicy?: RenamePolicy,
     sharing: SharingMode | SharingConfig = 'PRIVATE',
   ) {
+    // check input data
     if (
       !uploadResource ||
       !uploadResource.base64Data ||
@@ -239,7 +255,7 @@ export class DriveService {
     const { name, base64Data } = uploadResource;
     const { mimeType, base64Content } = this.base64StringBreakdown(base64Data);
 
-    // check input
+    // check input file
     if (!this.isValidFileType(mimeType)) {
       throw new Error('file/invalid-type');
     }
@@ -275,15 +291,6 @@ export class DriveService {
 
     // response
     return file;
-  }
-
-  private base64StringBreakdown(base64String: string) {
-    const [ mimeType, base64Content ] = base64String
-      .replace('data:', '').split(';base64,');
-    if (!mimeType || !base64Content) {
-      throw new Error('Malform base64 data.');
-    }
-    return { mimeType, base64Content };
   }
 
 }
