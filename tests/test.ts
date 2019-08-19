@@ -7,13 +7,22 @@ import { drive, DriveService } from '../src/public_api';
 let Drive: DriveService;
 
 let isFileSharedStub: sinon.SinonStub;
+let isValidFileTypeStub: sinon.SinonStub;
+let isValidFileSizeStub: sinon.SinonStub;
+let generateFileNameStub: sinon.SinonStub;
 let getFileInfoStub: sinon.SinonStub;
+let createFileFromBase64BodyStub: sinon.SinonStub;
 let getUploadFolderStub: sinon.SinonStub;
 let getOrCreateFolderByNameStub: sinon.SinonStub;
+let createFolderByYearAndMonthStub: sinon.SinonStub;
 let setFileSharingStub: sinon.SinonStub;
+let setEditPermissionForUserStub: sinon.SinonStub;
 let hasViewPermissionStub: sinon.SinonStub;
 let hasEditPermissionStub: sinon.SinonStub;
 let getFileByIdStub: sinon.SinonStub;
+let uploadFileStub: sinon.SinonStub;
+let updateFileStub: sinon.SinonStub;
+let removeFileStub: sinon.SinonStub;
 
 function before() {
 
@@ -44,25 +53,43 @@ function before() {
 
   // build stubs
   isFileSharedStub = sinon.stub(Drive, 'isFileShared');
+  isValidFileTypeStub = sinon.stub(Drive, 'isValidFileType');
+  isValidFileSizeStub = sinon.stub(Drive, 'isValidFileSize');
+  generateFileNameStub = sinon.stub(Drive, 'generateFileName');
   getFileInfoStub = sinon.stub(Drive, 'getFileInfo');
+  createFileFromBase64BodyStub = sinon.stub(Drive, 'createFileFromBase64Body');
   getUploadFolderStub = sinon.stub(Drive, 'getUploadFolder');
   getOrCreateFolderByNameStub = sinon.stub(Drive, 'getOrCreateFolderByName');
+  createFolderByYearAndMonthStub = sinon.stub(Drive, 'createFolderByYearAndMonth');
   setFileSharingStub = sinon.stub(Drive, 'setFileSharing');
+  setEditPermissionForUserStub = sinon.stub(Drive, 'setEditPermissionForUser');
   hasViewPermissionStub = sinon.stub(Drive, 'hasViewPermission');
   hasEditPermissionStub = sinon.stub(Drive, 'hasEditPermission');
   getFileByIdStub = sinon.stub(Drive, 'getFileById');
+  uploadFileStub = sinon.stub(Drive, 'uploadFile');
+  updateFileStub = sinon.stub(Drive, 'updateFile');
+  removeFileStub = sinon.stub(Drive, 'removeFile');
 
 }
 
 function after() {
   isFileSharedStub.restore();
+  isValidFileTypeStub.restore();
+  isValidFileSizeStub.restore();
+  generateFileNameStub.restore();
   getFileInfoStub.restore();
+  createFileFromBase64BodyStub.restore();
   getUploadFolderStub.restore();
   getOrCreateFolderByNameStub.restore();
+  createFolderByYearAndMonthStub.restore();
   setFileSharingStub.restore();
+  setEditPermissionForUserStub.restore();
   hasViewPermissionStub.restore();
   hasEditPermissionStub.restore();
   getFileByIdStub.restore();
+  uploadFileStub.restore();
+  updateFileStub.restore();
+  removeFileStub.restore();
 }
 
 /**
@@ -146,10 +173,10 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#base64StringBreakdown', () => {
-    const result = Drive.base64StringBreakdown('data:abc;base64,xxx=');
+    const result = Drive.base64StringBreakdown('data:xxx;base64,Abc=');
     expect(result).to.eql({
-      mimeType: 'abc',
-      base64Body: 'xxx=',
+      mimeType: 'xxx',
+      base64Body: 'Abc=',
     });
   });
 
@@ -208,11 +235,15 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#isValidFileType (no allowTypes, all allowed)', () => {
+    isValidFileTypeStub.restore();
+
     const result = Drive.isValidFileType('any');
     expect(result).to.equal(true);
   });
 
   it('#isValidFileType (has allowTypes, not allowed)', () => {
+    isValidFileTypeStub.restore();
+
     const Drive = drive({
       uploadFolder: 'xxx',
       allowTypes: ['text/plain'],
@@ -222,6 +253,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#isValidFileType (has allowTypes, allowed)', () => {
+    isValidFileTypeStub.restore();
+
     const Drive = drive({
       uploadFolder: 'xxx',
       allowTypes: ['text/rich'],
@@ -231,6 +264,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#isValidFileSize (no maxSize or 0, all allowed)', () => {
+    isValidFileSizeStub.restore();
+
     const Drive1 = drive({
       uploadFolder: 'xxx',
       maxSize: null,
@@ -246,11 +281,15 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#isValidFileSize (has maxSize, not allowed)', () => {
+    isValidFileSizeStub.restore();
+
     const result = Drive.isValidFileSize(11000000); // 1MB
     expect(result).to.equal(false);
   });
 
   it('#isValidFileSize (has maxSize, allowed)', () => {
+    isValidFileSizeStub.restore();
+
     const result = Drive.isValidFileSize(10000000); // 10MB
     expect(result).to.equal(true);
   });
@@ -263,6 +302,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#generateFileName', () => {
+    generateFileNameStub.restore();
+
     const fileName = 'file.txt';
     const result1 = Drive.generateFileName(fileName);
     const result2 = Drive.generateFileName(fileName, 'AUTO');
@@ -366,6 +407,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#createFolderByYearAndMonth', () => {
+    createFolderByYearAndMonthStub.restore();
+
     let yearFolderInput: any;
     let monthFolderInput: any;
     getOrCreateFolderByNameStub.onFirstCall().callsFake(
@@ -389,6 +432,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#createFileFromBase64Body', () => {
+    createFileFromBase64BodyStub.restore();
+
     global['Utilities'].base64Decode = (base64Body, charset) => ({ base64Body, charset });
     global['Utilities'].newBlob = (data, mimeType, fileName) => ({ data, mimeType, fileName });
 
@@ -441,6 +486,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#setEditPermissionForUser (no auth)', () => {
+    setEditPermissionForUserStub.restore();
+
     const file: any = {
       editors: null,
       addEditors: emails => file.editors = emails,
@@ -450,6 +497,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#setEditPermissionForUser (auth, no email)', () => {
+    setEditPermissionForUserStub.restore();
+
     const file: any = {
       editors: null,
       addEditors: emails => file.editors = emails,
@@ -459,6 +508,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#setEditPermissionForUser', () => {
+    setEditPermissionForUserStub.restore();
+
     const file: any = {
       editors: null,
       addEditors: emails => file.editors = emails,
@@ -601,6 +652,8 @@ describe('DriveService (main)', () => {
   });
 
   it('#uploadFile (invalid upload)', () => {
+    uploadFileStub.restore();
+
     expect(
       Drive.uploadFile.bind(Drive, null),
     ).to.throws('file/invalid-upload', 'no resource');
@@ -612,7 +665,147 @@ describe('DriveService (main)', () => {
     ).to.throws('file/invalid-upload', 'no name');
   });
 
+  it('#uploadFile (invalid type & size)', () => {
+    uploadFileStub.restore();
+
+    const upload = {
+      name: 'file.txt',
+      base64String: 'data:text/plain;base64,Abc=',
+    };
+    isValidFileTypeStub.onFirstCall().returns(false);
+    isValidFileTypeStub.onSecondCall().returns(true);
+    isValidFileSizeStub.returns(false);
+    expect(
+      Drive.uploadFile.bind(Drive, upload),
+    ).to.throws('file/invalid-type');
+    expect(
+      Drive.uploadFile.bind(Drive, upload),
+    ).to.throws('file/invalid-size');
+  });
+
+  it('#uploadFile (with no custom + no nested)', () => {
+    uploadFileStub.restore();
+    isValidFileTypeStub.restore();
+    isValidFileSizeStub.restore();
+
+    // args recorder
+    let folder: any = null;
+    let getOrCreateFolderByNameArgs: any = null; // custom folder
+    let generateFileNameArgs: any = null; // file name
+    let createFileFromBase64BodyArgs: any = null; // create the file
+    let createFolderByYearAndMonthArgs: any = null; // nested
+    let setFileSharingArgs: any = null;
+    let setEditPermissionForUserArgs: any = null;
+    // stubs
+    getUploadFolderStub.callsFake(() => folder = {});
+    getOrCreateFolderByNameStub.callsFake(
+      (... args) => getOrCreateFolderByNameArgs = args,
+    );
+    createFolderByYearAndMonthStub.callsFake(
+      (... args) => createFolderByYearAndMonthArgs = args,
+    );
+    generateFileNameStub.callsFake(
+      (... args) => {
+        generateFileNameArgs = args;
+        return args[0]; // input name
+      },
+    );
+    createFileFromBase64BodyStub.callsFake(
+      (... args) => {
+        createFileFromBase64BodyArgs = args;
+        return true;
+      },
+    );
+    setFileSharingStub.callsFake(
+      (... args) => setFileSharingArgs = args,
+    );
+    setEditPermissionForUserStub.callsFake(
+      (... args) => setEditPermissionForUserArgs = args,
+    );
+
+    const result = Drive.uploadFile(
+      {
+        name: 'file.txt',
+        base64String: 'data:text/plain;base64,Abc=',
+      },
+    );
+    expect(folder).eql({});
+    expect(getOrCreateFolderByNameArgs).equal(null, 'no custom folder'); // never
+    expect(createFolderByYearAndMonthArgs).equal(null, 'no nested'); // never
+    expect(generateFileNameArgs).eql([ 'file.txt', undefined ]);
+    expect(createFileFromBase64BodyArgs).eql([ {}, 'file.txt', 'text/plain', 'Abc=' ]);
+    expect(setFileSharingArgs).eql([ true, 'PRIVATE' ]); // file = result from createFileFromBase64Body
+    expect(setEditPermissionForUserArgs).eql([ true, null ]);
+  });
+
+  it('#uploadFile (test parent folder, has custom)', () => {
+    uploadFileStub.restore();
+    isValidFileTypeStub.restore();
+    isValidFileSizeStub.restore();
+
+    // args recorder
+    let getOrCreateFolderByNameArgs: any = null; // custom folder
+    let createFolderByYearAndMonthArgs: any = null; // nested
+    // stubs
+    getUploadFolderStub.returns({});
+    getOrCreateFolderByNameStub.callsFake(
+      (... args) => getOrCreateFolderByNameArgs = args,
+    );
+    createFolderByYearAndMonthStub.callsFake(
+      (... args) => createFolderByYearAndMonthArgs = args,
+    );
+    generateFileNameStub.returns(true);
+    createFileFromBase64BodyStub.returns(true);
+    setFileSharingStub.returns(true);
+    setEditPermissionForUserStub.returns(true);
+
+    const result = Drive.uploadFile(
+      {
+        name: 'file.txt',
+        base64String: 'data:text/plain;base64,Abc=',
+      },
+      'xxx',
+    );
+    expect(getOrCreateFolderByNameArgs).eql([ 'xxx', {} ]);
+    expect(createFolderByYearAndMonthArgs).equal(null); // never
+  });
+
+  it('#uploadFile (test parent folder, nested)', () => {
+    uploadFileStub.restore();
+    isValidFileTypeStub.restore();
+    isValidFileSizeStub.restore();
+
+    // args recorder
+    let getOrCreateFolderByNameArgs: any = null; // custom folder
+    let createFolderByYearAndMonthArgs: any = null; // nested
+    // stubs
+    getUploadFolderStub.returns({});
+    getOrCreateFolderByNameStub.callsFake(
+      (... args) => getOrCreateFolderByNameArgs = args,
+    );
+    createFolderByYearAndMonthStub.callsFake(
+      (... args) => createFolderByYearAndMonthArgs = args,
+    );
+    generateFileNameStub.returns(true);
+    createFileFromBase64BodyStub.returns(true);
+    setFileSharingStub.returns(true);
+    setEditPermissionForUserStub.returns(true);
+
+    // @ts-ignore
+    Drive.options.nested = true;
+    const result = Drive.uploadFile(
+      {
+        name: 'file.txt',
+        base64String: 'data:text/plain;base64,Abc=',
+      },
+    );
+    expect(getOrCreateFolderByNameArgs).equal(null); // never
+    expect(createFolderByYearAndMonthArgs).eql([ {} ]);
+  });
+
   it('#updateFile (no edit permission)', () => {
+    updateFileStub.restore();
+
     getFileByIdStub.returns({});
     hasEditPermissionStub.returns(false);
     expect(
@@ -621,6 +814,8 @@ describe('DriveService (main)', () => {
   });
 
   it('#updateFile', () => {
+    updateFileStub.restore();
+
     const file = {
       name: null,
       description: null,
@@ -649,6 +844,8 @@ describe('DriveService (main)', () => {
   });
 
   it('#removeFile (no edit permission)', () => {
+    removeFileStub.restore();
+
     getFileByIdStub.returns({});
     hasEditPermissionStub.returns(false);
     expect(
@@ -657,6 +854,8 @@ describe('DriveService (main)', () => {
   });
 
   it('#removeFile', () => {
+    removeFileStub.restore();
+
     getFileByIdStub.returns({
       setTrashed: () => true,
     });
