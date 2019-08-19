@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>FileResource | @sheetbase/drive</title>
+	<title>UploadResource | @sheetbase/drive</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -52,10 +52,10 @@
 					<a href="../index.html">Globals</a>
 				</li>
 				<li>
-					<a href="fileresource.html">FileResource</a>
+					<a href="uploadresource.html">UploadResource</a>
 				</li>
 			</ul>
-			<h1>Interface FileResource</h1>
+			<h1>Interface UploadResource</h1>
 		</div>
 	</div>
 </header>
@@ -66,7 +66,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">FileResource</span>
+						<span class="target">UploadResource</span>
 					</li>
 				</ul>
 			</section>
@@ -77,9 +77,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fileresource.html#base64data" class="tsd-kind-icon">base64<wbr>Data</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fileresource.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="fileresource.html#size" class="tsd-kind-icon">size</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#base64string" class="tsd-kind-icon">base64<wbr>String</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#name" class="tsd-kind-icon">name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -88,12 +87,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="base64data" class="tsd-anchor"></a>
-					<h3>base64<wbr>Data</h3>
-					<div class="tsd-signature tsd-kind-icon">base64<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="base64string" class="tsd-anchor"></a>
+					<h3>base64<wbr>String</h3>
+					<div class="tsd-signature tsd-kind-icon">base64<wbr>String<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/caeb788/src/lib/types.ts#L9">lib/types.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/82120be/src/lib/types.ts#L19">lib/types.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -103,17 +102,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/caeb788/src/lib/types.ts#L8">lib/types.ts:8</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="size" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> size</h3>
-					<div class="tsd-signature tsd-kind-icon">size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/caeb788/src/lib/types.ts#L10">lib/types.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/82120be/src/lib/types.ts#L18">lib/types.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -132,32 +121,44 @@
 					<li class=" tsd-kind-class">
 						<a href="../classes/driveservice.html" class="tsd-kind-icon">Drive<wbr>Service</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="fileinfo.html" class="tsd-kind-icon">File<wbr>Info</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="fileupdatedata.html" class="tsd-kind-icon">File<wbr>Update<wbr>Data</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="intergration.html" class="tsd-kind-icon">Intergration</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="options.html" class="tsd-kind-icon">Options</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="sharingconfig.html" class="tsd-kind-icon">Sharing<wbr>Config</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
-						<a href="fileresource.html" class="tsd-kind-icon">File<wbr>Resource</a>
+						<a href="uploadresource.html" class="tsd-kind-icon">Upload<wbr>Resource</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fileresource.html#base64data" class="tsd-kind-icon">base64<wbr>Data</a>
+								<a href="uploadresource.html#base64string" class="tsd-kind-icon">base64<wbr>String</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fileresource.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="fileresource.html#size" class="tsd-kind-icon">size</a>
+								<a href="uploadresource.html#name" class="tsd-kind-icon">name</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface">
-						<a href="options.html" class="tsd-kind-icon">Options</a>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#filesharing" class="tsd-kind-icon">File<wbr>Sharing</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="resultget.html" class="tsd-kind-icon">Result<wbr>Get</a>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#renamepolicy" class="tsd-kind-icon">Rename<wbr>Policy</a>
 					</li>
-					<li class=" tsd-kind-interface">
-						<a href="resultupload.html" class="tsd-kind-icon">Result<wbr>Upload</a>
+					<li class=" tsd-kind-type-alias">
+						<a href="../index.html#sharingpreset" class="tsd-kind-icon">Sharing<wbr>Preset</a>
 					</li>
 					<li class=" tsd-kind-function">
 						<a href="../index.html#drive" class="tsd-kind-icon">drive</a>
@@ -179,6 +180,7 @@
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -227,7 +229,7 @@
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
