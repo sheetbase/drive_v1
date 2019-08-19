@@ -20,6 +20,7 @@ let setEditPermissionForUserStub: sinon.SinonStub;
 let hasViewPermissionStub: sinon.SinonStub;
 let hasEditPermissionStub: sinon.SinonStub;
 let getFileByIdStub: sinon.SinonStub;
+let getFileInfoByIdStub: sinon.SinonStub;
 let uploadFileStub: sinon.SinonStub;
 let updateFileStub: sinon.SinonStub;
 let removeFileStub: sinon.SinonStub;
@@ -66,6 +67,7 @@ function before() {
   hasViewPermissionStub = sinon.stub(Drive, 'hasViewPermission');
   hasEditPermissionStub = sinon.stub(Drive, 'hasEditPermission');
   getFileByIdStub = sinon.stub(Drive, 'getFileById');
+  getFileInfoByIdStub = sinon.stub(Drive, 'getFileInfoById');
   uploadFileStub = sinon.stub(Drive, 'uploadFile');
   updateFileStub = sinon.stub(Drive, 'updateFile');
   removeFileStub = sinon.stub(Drive, 'removeFile');
@@ -87,6 +89,7 @@ function after() {
   hasViewPermissionStub.restore();
   hasEditPermissionStub.restore();
   getFileByIdStub.restore();
+  getFileInfoByIdStub.restore();
   uploadFileStub.restore();
   updateFileStub.restore();
   removeFileStub.restore();
@@ -646,6 +649,8 @@ describe('DriveService (main)', () => {
   });
 
   it('#getFileInfoById', () => {
+    getFileInfoByIdStub.restore();
+
     getFileInfoStub.returns(true as any);
     const result = Drive.getFileInfoById('xxx');
     expect(result).to.equal(true);
@@ -870,165 +875,76 @@ describe('Drive routes', () => {
 
   const routerRecorder = {};
   const Router = {
-    get: (endpoint, ...handlers) => {
-      routerRecorder['GET:' + endpoint] = handlers;
-    },
-    post: (endpoint, ...handlers) => {
-      routerRecorder['POST:' + endpoint] = handlers;
-    },
+    get: (endpoint, ...handlers) => routerRecorder['GET:' + endpoint] = handlers,
+    put: (endpoint, ...handlers) => routerRecorder['PUT:' + endpoint] = handlers,
+    post: (endpoint, ...handlers) => routerRecorder['POST:' + endpoint] = handlers,
+    delete: (endpoint, ...handlers) => routerRecorder['DELETE:' + endpoint] = handlers,
     setDisabled: () => true,
     setErrors: () => true,
   };
 
   // prepare
   before();
+  getFileInfoByIdStub.callsFake(id => id);
+  uploadFileStub.returns({} as any);
+  getFileInfoStub.returns('xxx');
 
   // register routes
-  // Drive.registerRoutes({
-  //   router: Router as any,
-  // });
+  Drive.registerRoutes({
+    router: Router as any,
+  });
 
-  // it('register routes', () => {
-  //   expect(Object.keys(routerRecorder)).to.eql([
-  //     'GET:/storage',
-  //     'PUT:/storage',
-  //     'POST:/storage',
-  //     'DELETE:/storage',
-  //   ]);
-  //   expect(routerRecorder['GET:/storage'].length).to.equal(3);
-  //   expect(routerRecorder['PUT:/storage'].length).to.equal(3);
-  //   expect(routerRecorder['POST:/storage'].length).to.equal(3);
-  //   expect(routerRecorder['DELETE:/storage'].length).to.equal(3);
-  // });
+  it('register routes', () => {
+    expect(Object.keys(routerRecorder)).to.eql([
+      'GET:/storage',
+      'PUT:/storage',
+      'POST:/storage',
+      'DELETE:/storage',
+    ]);
+    expect(routerRecorder['GET:/storage'].length).to.equal(3);
+    expect(routerRecorder['PUT:/storage'].length).to.equal(3);
+    expect(routerRecorder['POST:/storage'].length).to.equal(3);
+    expect(routerRecorder['DELETE:/storage'].length).to.equal(3);
+  });
+
+  it('GET /storage', () => {
+    const handler = routerRecorder['GET:/storage'].pop();
+    const result = handler({
+      query: { id: 'xxx' },
+    }, {
+      success: data => data,
+    });
+    expect(result).to.equal('xxx');
+  });
+
+  it('PUT /storage', () => {
+    const handler = routerRecorder['PUT:/storage'].pop();
+    const result = handler({
+      body: { uploadResource: {} },
+    }, {
+      success: data => data,
+    });
+    expect(result).to.equal('xxx');
+  });
+
+  it('POST /storage', () => {
+    const handler = routerRecorder['POST:/storage'].pop();
+    const result = handler({
+      body: { id: 'xxx', data: null },
+    }, {
+      success: data => data,
+    });
+    expect(result).to.eql({ done: true });
+  });
+
+  it('DELETE /storage', () => {
+    const handler = routerRecorder['DELETE:/storage'].pop();
+    const result = handler({
+      body: { id: 'xxx' },
+    }, {
+      success: data => data,
+    });
+    expect(result).to.eql({ done: true });
+  });
 
 });
-
-// describe('Routes test', () => {
-
-//     beforeEach(() => {
-//         routerRecorder = {}; // reset recorder
-//     });
-
-//     it('#registerRoutes should throw error (no router)', () => {
-//         expect(
-//             Drive.registerRoutes.bind(Drive, { router: null }),
-//         ).to.throw();
-//     });
-
-//     it('#registerRoutes should have default disable routes', () => {
-//         Drive.registerRoutes({ router });
-//         const disabledRoutes = Sheetbase.Option.getDisabledRoutes();
-//         expect(disabledRoutes).to.eql(['post:/storage', 'put:/storage']);
-//     });
-
-//     it('#registerRoutes should disable route GET /storage (also override default)', () => {
-//         Drive.registerRoutes({
-//             router, disabledRoutes: ['get:/storage'],
-//         });
-//         const disabledRoutes = Sheetbase.Option.getDisabledRoutes();
-//         expect(disabledRoutes.indexOf('get:/storage') > -1).to.equal(true);
-//     });
-
-//     it('#registerRoutes should register all routes', () => {
-//         Drive.registerRoutes({ router });
-//         expect(routerRecorder).to.have.property('GET:/storage');
-//         expect(routerRecorder).to.have.property('POST:/storage');
-//         expect(routerRecorder).to.have.property('PUT:/storage');
-//     });
-
-//     it('#registerRoutes should use different endpoint', () => {
-//         Drive.registerRoutes({
-//             router, endpoint: 'file',
-//         });
-//         expect(routerRecorder).to.not.have.property('GET:/storage');
-//         expect(routerRecorder).to.have.property('GET:/file');
-//     });
-
-//     it('#registerRoutes should have proper middlewares', () => {
-//         Drive.registerRoutes({
-//             router,
-//         });
-//         const handlers = routerRecorder['GET:/storage'];
-//         const [ middleware, handler ] = handlers;
-//         expect(handlers.length).to.equal(2);
-//         expect(middleware instanceof Function).to.equal(true);
-//         expect(handler instanceof Function).to.equal(true);
-//     });
-
-//     it('#registerRoutes should have proper middlewares (custom)', () => {
-//         Drive.registerRoutes({
-//             router,
-//             middlewares: [
-//                 (req, res, next) => next(),
-//                 (req, res, next) => next(),
-//             ],
-//         });
-//         const handlers = routerRecorder['GET:/storage'];
-//         expect(handlers.length).to.equal(3);
-//     });
-
-// });
-
-// describe('Methods test', () => {
-//     const hasPermissionStub = sinon.stub(Drive, 'hasPermission');
-
-//     afterEach(() => {
-//         hasPermissionStub.restore();
-//     });
-
-//     it('#get should throw error (no id)', () => {
-//         expect(
-//             Drive.get.bind(Drive, null),
-//         ).to.throw('file/no-id');
-//     });
-
-//     it('#get should throw error (no permission)');
-
-//     it('#get should work');
-
-//     it('#upload should throw error (no fileResource)', () => {
-//         expect(
-//             Drive.upload.bind(Drive, null),
-//         ).to.throw('file/invalid-file-resource');
-//     });
-
-//     it('#upload should throw error (invalid fileResource type)', () => {
-//         expect(
-//             Drive.upload.bind(Drive, 'a string'),
-//         ).to.throw('file/invalid-file-resource');
-//     });
-
-//     it('#upload should throw error (missing fileResource props)', () => {
-//         expect(
-//             Drive.upload.bind(Drive, {}),
-//         ).to.throw('file/invalid-file-resource');
-//     });
-
-//     it('#upload should throw error (missing fileResource.base64Content)', () => {
-//         expect(
-//             Drive.upload.bind(Drive, {
-//                 mimeType: 'type1',
-//                 name: 'file1',
-//             }),
-//         ).to.throw('file/invalid-file-resource');
-//     });
-
-//     it('#upload should throw error (missing fileResource.mimeType)', () => {
-//         expect(
-//             Drive.upload.bind(Drive, {
-//                 base64Content: 'xxx',
-//                 name: 'file1',
-//             }),
-//         ).to.throw('file/invalid-file-resource');
-//     });
-
-//     it('#upload should throw error (missing fileResource.name)', () => {
-//         expect(
-//             Drive.upload.bind(Drive, {
-//                 base64Content: 'xxx',
-//                 mimeType: 'type1',
-//             }),
-//         ).to.throw('file/invalid-file-resource');
-//     });
-
-// });

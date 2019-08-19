@@ -66,7 +66,7 @@ export class DriveService {
    * routes
    */
 
-  registerRoutes(options: AddonRoutesOptions): void {
+  registerRoutes(options: AddonRoutesOptions) {
     const {
       router,
       endpoint = 'storage',
@@ -91,12 +91,14 @@ export class DriveService {
     // get file information
     router.get('/' + endpoint, ... middlewares, (req, res) => {
       const { id } = req.query;
+      // process
       let result: any;
       try {
         result = this.getFileInfoById(id);
       } catch (code) {
         return res.error(code);
       }
+      // succeed
       return res.success(result);
     });
 
@@ -108,35 +110,41 @@ export class DriveService {
         renamePolicy,
         sharing,
       } = req.body;
+      // process
       let result: any;
       try {
-        result = this.uploadFile(uploadResource, customFolder, renamePolicy, sharing);
+        const file = this.uploadFile(uploadResource, customFolder, renamePolicy, sharing);
+        result = this.getFileInfo(file);
       } catch (code) {
         return res.error(code);
       }
-      return res.success(this.getFileInfo(result));
+      // succeed
+      return res.success(result);
     });
 
     // update a file
     router.post('/' + endpoint, ... middlewares, (req, res) => {
       const { id, data } = req.body;
-      let result: any;
+      // process
       try {
-        result = this.updateFile(id, data);
+        this.updateFile(id, data);
       } catch (code) {
         return res.error(code);
       }
-      return res.success(this.getFileInfo(result));
+      // succeed
+      return res.success({ done: true });
     });
 
     // delete a file
     router.delete('/' + endpoint, ... middlewares, (req, res) => {
       const { id } = req.body;
+      // process
       try {
         this.removeFile(id);
       } catch (code) {
         return res.error(code);
       }
+      // succeed
       return res.success({ done: true });
     });
   }
