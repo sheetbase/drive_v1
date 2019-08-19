@@ -18,7 +18,7 @@ export class DriveService {
   private errors: RoutingErrors = {
     'file/no-file': 'File not found (no VIEW permission or trashed).',
     'file/no-edit': 'No EDIT permission.',
-    'file/invalid-upload-resource': 'Invalid upload resource.',
+    'file/invalid-upload': 'Invalid upload resource.',
     'file/invalid-size': 'The file is too big.',
     'file/invalid-type': 'The file format is not supported.',
   };
@@ -343,15 +343,15 @@ export class DriveService {
     // check input data
     if (
       !uploadResource ||
-      !uploadResource.base64Data ||
+      !uploadResource.base64String ||
       !uploadResource.name
     ) {
-      throw new Error('file/invalid-upload-resource');
+      throw new Error('file/invalid-upload');
     }
 
     // retrieve data
-    const { name, base64Data } = uploadResource;
-    const { mimeType, base64Body } = this.base64StringBreakdown(base64Data);
+    const { name, base64String } = uploadResource;
+    const { mimeType, base64Body } = this.base64StringBreakdown(base64String);
 
     // check input file
     if (!this.isValidFileType(mimeType)) {
@@ -387,18 +387,18 @@ export class DriveService {
       throw new Error('file/no-edit');
     }
     // update data
-    const { name, description, sharing, content } = data;
+    const { name, description, content, sharing } = data;
     if (!!name) {
       file.setName(name);
     }
     if (!!description) {
       file.setDescription(description);
     }
-    if (!!sharing) {
-      file = this.setFileSharing(file, sharing);
-    }
     if (!!content) {
       file.setContent(content);
+    }
+    if (!!sharing) {
+      file = this.setFileSharing(file, sharing);
     }
     return file;
   }

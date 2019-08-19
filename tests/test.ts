@@ -10,6 +10,7 @@ let isFileSharedStub: sinon.SinonStub;
 let getFileInfoStub: sinon.SinonStub;
 let getUploadFolderStub: sinon.SinonStub;
 let getOrCreateFolderByNameStub: sinon.SinonStub;
+let setFileSharingStub: sinon.SinonStub;
 let hasViewPermissionStub: sinon.SinonStub;
 let hasEditPermissionStub: sinon.SinonStub;
 let getFileByIdStub: sinon.SinonStub;
@@ -46,6 +47,7 @@ function before() {
   getFileInfoStub = sinon.stub(Drive, 'getFileInfo');
   getUploadFolderStub = sinon.stub(Drive, 'getUploadFolder');
   getOrCreateFolderByNameStub = sinon.stub(Drive, 'getOrCreateFolderByName');
+  setFileSharingStub = sinon.stub(Drive, 'setFileSharing');
   hasViewPermissionStub = sinon.stub(Drive, 'hasViewPermission');
   hasEditPermissionStub = sinon.stub(Drive, 'hasEditPermission');
   getFileByIdStub = sinon.stub(Drive, 'getFileById');
@@ -57,6 +59,7 @@ function after() {
   getFileInfoStub.restore();
   getUploadFolderStub.restore();
   getOrCreateFolderByNameStub.restore();
+  setFileSharingStub.restore();
   hasViewPermissionStub.restore();
   hasEditPermissionStub.restore();
   getFileByIdStub.restore();
@@ -406,6 +409,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#setFileSharing (use preset, default)', () => {
+    setFileSharingStub.restore();
+
     const result = Drive.setFileSharing({
       setSharing: (access, permission) => ({ access, permission }),
     } as any);
@@ -413,6 +418,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#setFileSharing (use preset)', () => {
+    setFileSharingStub.restore();
+
     const result = Drive.setFileSharing(
       { setSharing: (access, permission) => ({ access, permission }) } as any,
       'PUBLIC',
@@ -421,6 +428,8 @@ describe('DriveService (helpers)', () => {
   });
 
   it('#setFileSharing (custom)', () => {
+    setFileSharingStub.restore();
+
     const result = Drive.setFileSharing(
       { setSharing: (access, permission) => ({ access, permission }) } as any,
       {
@@ -556,7 +565,6 @@ describe('DriveService (main)', () => {
     global['DriveApp'].getFileById = () => ({
       isTrashed: () => true,
     });
-
     expect(
       Drive.getFileById.bind(Drive, 'xxx'),
     ).to.throws('file/no-file');
@@ -569,7 +577,6 @@ describe('DriveService (main)', () => {
     global['DriveApp'].getFileById = () => ({
       isTrashed: () => false,
     });
-
     expect(
       Drive.getFileById.bind(Drive, 'xxx'),
     ).to.throws('file/no-file');
@@ -583,7 +590,6 @@ describe('DriveService (main)', () => {
       isTrashed: () => false,
       id,
     });
-
     const result = Drive.getFileById('xxx');
     expect(result['id']).to.equal('xxx');
   });
@@ -591,6 +597,71 @@ describe('DriveService (main)', () => {
   it('#getFileInfoById', () => {
     getFileInfoStub.returns(true as any);
     const result = Drive.getFileInfoById('xxx');
+    expect(result).to.equal(true);
+  });
+
+  it('#uploadFile (invalid upload)', () => {
+    expect(
+      Drive.uploadFile.bind(Drive, null),
+    ).to.throws('file/invalid-upload', 'no resource');
+    expect(
+      Drive.uploadFile.bind(Drive, { name: 'file.txt' }),
+    ).to.throws('file/invalid-upload', 'no base64String');
+    expect(
+      Drive.uploadFile.bind(Drive, { base64String: 'data:text/plain;base64,Abc=' }),
+    ).to.throws('file/invalid-upload', 'no name');
+  });
+
+  it('#updateFile (no edit permission)', () => {
+    getFileByIdStub.returns({});
+    hasEditPermissionStub.returns(false);
+    expect(
+      Drive.updateFile.bind(Drive, 'xxx'),
+    ).to.throws('file/no-edit');
+  });
+
+  it('#updateFile', () => {
+    const file = {
+      name: null,
+      description: null,
+      sharing: null,
+      content: null,
+      setName: name => file.name = name,
+      setDescription: description => file.description = description,
+      setContent: content => file.content = content,
+    };
+    setFileSharingStub.callsFake((f, sharing) => {
+      file.sharing = sharing;
+      return file;
+    });
+    getFileByIdStub.returns(file);
+    hasEditPermissionStub.returns(true);
+    const result = Drive.updateFile('xxx', {
+      name: 'New name',
+      description: 'New description.',
+      sharing: 'PRIVATE',
+      content: 'New content.',
+    });
+    expect(result['name']).to.equal('New name');
+    expect(result['description']).to.equal('New description.');
+    expect(result['sharing']).to.equal('PRIVATE');
+    expect(result['content']).to.equal('New content.');
+  });
+
+  it('#removeFile (no edit permission)', () => {
+    getFileByIdStub.returns({});
+    hasEditPermissionStub.returns(false);
+    expect(
+      Drive.removeFile.bind(Drive, 'xxx'),
+    ).to.throws('file/no-edit');
+  });
+
+  it('#removeFile', () => {
+    getFileByIdStub.returns({
+      setTrashed: () => true,
+    });
+    hasEditPermissionStub.returns(true);
+    const result = Drive.removeFile('xxx');
     expect(result).to.equal(true);
   });
 

@@ -16,7 +16,7 @@ export interface Intergration {
 
 export interface UploadResource {
   name: string;
-  base64Data: string;
+  base64String: string;
 }
 
 export interface FileInfo {
