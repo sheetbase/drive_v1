@@ -14,9 +14,16 @@ export interface Intergration {
   AuthToken?: any;
 }
 
-export interface UploadResource {
+export interface UploadFile {
   name: string;
-  base64String: string;
+  base64Value: string;
+}
+
+export interface UploadResource {
+  file: UploadFile;
+  folder?: string;
+  rename?: RenamePolicy;
+  share?: FileSharing;
 }
 
 export interface FileInfo {

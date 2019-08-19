@@ -11,6 +11,7 @@ let isValidFileTypeStub: sinon.SinonStub;
 let isValidFileSizeStub: sinon.SinonStub;
 let generateFileNameStub: sinon.SinonStub;
 let getFileInfoStub: sinon.SinonStub;
+let getFilesInfoStub: sinon.SinonStub;
 let createFileFromBase64BodyStub: sinon.SinonStub;
 let getUploadFolderStub: sinon.SinonStub;
 let getOrCreateFolderByNameStub: sinon.SinonStub;
@@ -22,6 +23,7 @@ let hasEditPermissionStub: sinon.SinonStub;
 let getFileByIdStub: sinon.SinonStub;
 let getFileInfoByIdStub: sinon.SinonStub;
 let uploadFileStub: sinon.SinonStub;
+let uploadFilesStub: sinon.SinonStub;
 let updateFileStub: sinon.SinonStub;
 let removeFileStub: sinon.SinonStub;
 
@@ -58,6 +60,7 @@ function before() {
   isValidFileSizeStub = sinon.stub(Drive, 'isValidFileSize');
   generateFileNameStub = sinon.stub(Drive, 'generateFileName');
   getFileInfoStub = sinon.stub(Drive, 'getFileInfo');
+  getFilesInfoStub = sinon.stub(Drive, 'getFilesInfo');
   createFileFromBase64BodyStub = sinon.stub(Drive, 'createFileFromBase64Body');
   getUploadFolderStub = sinon.stub(Drive, 'getUploadFolder');
   getOrCreateFolderByNameStub = sinon.stub(Drive, 'getOrCreateFolderByName');
@@ -69,6 +72,7 @@ function before() {
   getFileByIdStub = sinon.stub(Drive, 'getFileById');
   getFileInfoByIdStub = sinon.stub(Drive, 'getFileInfoById');
   uploadFileStub = sinon.stub(Drive, 'uploadFile');
+  uploadFilesStub = sinon.stub(Drive, 'uploadFiles');
   updateFileStub = sinon.stub(Drive, 'updateFile');
   removeFileStub = sinon.stub(Drive, 'removeFile');
 
@@ -80,6 +84,7 @@ function after() {
   isValidFileSizeStub.restore();
   generateFileNameStub.restore();
   getFileInfoStub.restore();
+  getFilesInfoStub.restore();
   createFileFromBase64BodyStub.restore();
   getUploadFolderStub.restore();
   getOrCreateFolderByNameStub.restore();
@@ -91,6 +96,7 @@ function after() {
   getFileByIdStub.restore();
   getFileInfoByIdStub.restore();
   uploadFileStub.restore();
+  uploadFilesStub.restore();
   updateFileStub.restore();
   removeFileStub.restore();
 }
@@ -357,6 +363,14 @@ describe('DriveService (helpers)', () => {
       url: 'https://drive.google.com/uc?id=file-xxx',
       downloadUrl: 'https://drive.google.com/uc?id=file-xxx&export=download',
     });
+  });
+
+  it('#getFilesInfo', () => {
+    getFilesInfoStub.restore();
+
+    getFileInfoStub.returns('xxx');
+    const result = Drive.getFilesInfo([ null, null, null]);
+    expect(result).to.eql([ 'xxx', 'xxx', 'xxx' ]);
   });
 
   it('#getUploadFolder', () => {
@@ -666,7 +680,7 @@ describe('DriveService (main)', () => {
       Drive.uploadFile.bind(Drive, { name: 'file.txt' }),
     ).to.throws('file/invalid-upload', 'no base64String');
     expect(
-      Drive.uploadFile.bind(Drive, { base64String: 'data:text/plain;base64,Abc=' }),
+      Drive.uploadFile.bind(Drive, { base64Value: 'data:text/plain;base64,Abc=' }),
     ).to.throws('file/invalid-upload', 'no name');
   });
 
@@ -675,7 +689,7 @@ describe('DriveService (main)', () => {
 
     const upload = {
       name: 'file.txt',
-      base64String: 'data:text/plain;base64,Abc=',
+      base64Value: 'data:text/plain;base64,Abc=',
     };
     isValidFileTypeStub.onFirstCall().returns(false);
     isValidFileTypeStub.onSecondCall().returns(true);
@@ -731,7 +745,7 @@ describe('DriveService (main)', () => {
     const result = Drive.uploadFile(
       {
         name: 'file.txt',
-        base64String: 'data:text/plain;base64,Abc=',
+        base64Value: 'data:text/plain;base64,Abc=',
       },
     );
     expect(folder).eql({});
@@ -767,7 +781,7 @@ describe('DriveService (main)', () => {
     const result = Drive.uploadFile(
       {
         name: 'file.txt',
-        base64String: 'data:text/plain;base64,Abc=',
+        base64Value: 'data:text/plain;base64,Abc=',
       },
       'xxx',
     );
@@ -801,11 +815,24 @@ describe('DriveService (main)', () => {
     const result = Drive.uploadFile(
       {
         name: 'file.txt',
-        base64String: 'data:text/plain;base64,Abc=',
+        base64Value: 'data:text/plain;base64,Abc=',
       },
     );
     expect(getOrCreateFolderByNameArgs).equal(null); // never
     expect(createFolderByYearAndMonthArgs).eql([ {} ]);
+  });
+
+  it('#uploadFiles', () => {
+    uploadFilesStub.restore();
+
+    uploadFileStub.returns('xxx');
+
+    const result = Drive.uploadFiles([
+      { file: null },
+      { file: null },
+      { file: null },
+    ]);
+    expect(result).to.eql([ 'xxx', 'xxx', 'xxx' ]);
   });
 
   it('#updateFile (no edit permission)', () => {
@@ -886,8 +913,10 @@ describe('Drive routes', () => {
   // prepare
   before();
   getFileInfoByIdStub.callsFake(id => id);
-  uploadFileStub.returns({} as any);
   getFileInfoStub.returns('xxx');
+  getFilesInfoStub.returns([ 'xxx' ]);
+  uploadFileStub.returns({} as any);
+  uploadFilesStub.returns([] as any);
 
   // register routes
   Drive.registerRoutes({
@@ -918,13 +947,27 @@ describe('Drive routes', () => {
   });
 
   it('PUT /storage', () => {
-    const handler = routerRecorder['PUT:/storage'].pop();
+    const handler = routerRecorder['PUT:/storage'][
+      routerRecorder['PUT:/storage'].length - 1
+    ];
     const result = handler({
-      body: { uploadResource: {} },
+      body: { file: {} },
     }, {
       success: data => data,
     });
     expect(result).to.equal('xxx');
+  });
+
+  it('PUT /storage (multiple)', () => {
+    const handler = routerRecorder['PUT:/storage'][
+      routerRecorder['PUT:/storage'].length - 1
+    ];
+    const result = handler({
+      body: { files: [] },
+    }, {
+      success: data => data,
+    });
+    expect(result).to.eql([ 'xxx' ]);
   });
 
   it('POST /storage', () => {

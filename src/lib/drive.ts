@@ -4,6 +4,7 @@ import { md5 } from '../md5/md5';
 import {
   Options,
   Intergration,
+  UploadFile,
   UploadResource,
   FileInfo,
   RenamePolicy,
@@ -102,19 +103,35 @@ export class DriveService {
       return res.success(result);
     });
 
-    // upload a file
+    // upload a file / multiple files
     router.put('/' + endpoint, ... middlewares, (req, res) => {
       const {
-        uploadResource,
-        customFolder,
-        renamePolicy,
-        sharing,
+        // single file
+        file: fileData,
+        folder: customFolder,
+        rename: renamePolicy,
+        share: sharing,
+        // multiple files
+        files: uploadResources,
       } = req.body;
       // process
       let result: any;
       try {
-        const file = this.uploadFile(uploadResource, customFolder, renamePolicy, sharing);
-        result = this.getFileInfo(file);
+        if (
+          !!fileData &&
+          !uploadResources
+        ) {
+          // single file
+          const file = this.uploadFile(fileData, customFolder, renamePolicy, sharing);
+          result = this.getFileInfo(file);
+        } else if (
+          !!uploadResources &&
+          uploadResources.length <= 30
+        ) {
+          // multiple files
+          const files = this.uploadFiles(uploadResources);
+          result = this.getFilesInfo(files);
+        }
       } catch (code) {
         return res.error(code);
       }
@@ -240,6 +257,16 @@ export class DriveService {
     };
   }
 
+  getFilesInfo(files: GoogleAppsScript.Drive.File[]): FileInfo[] {
+    const info: FileInfo[] = [];
+    for (let i = 0; i < files.length; i++) {
+      info.push(
+        this.getFileInfo(files[i]),
+      );
+    }
+    return info;
+  }
+
   getUploadFolder() {
     const { uploadFolder } = this.options;
     return  DriveApp.getFolderById(uploadFolder);
@@ -285,7 +312,10 @@ export class DriveService {
     file: GoogleAppsScript.Drive.File,
     sharing: FileSharing = 'PRIVATE',
   ) {
-    const { access, permission } = (typeof sharing === 'string') ? this.getSharingPreset(sharing) : sharing;
+    const {
+      access = 'PRIVATE',
+      permission = 'VIEW',
+    } = (typeof sharing === 'string') ? this.getSharingPreset(sharing) : sharing;
     return file.setSharing(
       DriveApp.Access[access.toUpperCase()],
       DriveApp.Permission[permission.toUpperCase()],
@@ -343,23 +373,23 @@ export class DriveService {
   }
 
   uploadFile(
-    uploadResource: UploadResource,
+    fileData: UploadFile,
     customFolder?: string,
     renamePolicy?: RenamePolicy,
     sharing: FileSharing = 'PRIVATE',
   ) {
     // check input data
     if (
-      !uploadResource ||
-      !uploadResource.base64String ||
-      !uploadResource.name
+      !fileData ||
+      !fileData.base64Value ||
+      !fileData.name
     ) {
       throw new Error('file/invalid-upload');
     }
 
     // retrieve data
-    const { name, base64String } = uploadResource;
-    const { mimeType, base64Body } = this.base64StringBreakdown(base64String);
+    const { name, base64Value } = fileData;
+    const { mimeType, base64Body } = this.base64StringBreakdown(base64Value);
 
     // check input file
     if (!this.isValidFileType(mimeType)) {
@@ -387,6 +417,23 @@ export class DriveService {
 
     // return
     return file;
+  }
+
+  uploadFiles(uploadResources: UploadResource[]) {
+    const files: GoogleAppsScript.Drive.File[] = [];
+    for (let i = 0; i < uploadResources.length; i++) {
+      // upload a file
+      const {
+        file: fileData,
+        folder: customFolder,
+        rename: renamePolicy,
+        share: sharing,
+      } = uploadResources[i];
+      const file = this.uploadFile(fileData, customFolder, renamePolicy, sharing);
+      // save to return
+      files.push(file);
+    }
+    return files;
   }
 
   updateFile(id: string, data: FileUpdateData = {}) {

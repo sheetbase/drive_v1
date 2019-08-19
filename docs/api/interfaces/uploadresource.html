@@ -77,8 +77,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#base64string" class="tsd-kind-icon">base64<wbr>String</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#file" class="tsd-kind-icon">file</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#folder" class="tsd-kind-icon">folder</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#rename" class="tsd-kind-icon">rename</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="uploadresource.html#share" class="tsd-kind-icon">share</a></li>
 							</ul>
 						</section>
 					</div>
@@ -87,22 +89,42 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="base64string" class="tsd-anchor"></a>
-					<h3>base64<wbr>String</h3>
-					<div class="tsd-signature tsd-kind-icon">base64<wbr>String<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="file" class="tsd-anchor"></a>
+					<h3>file</h3>
+					<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <a href="uploadfile.html" class="tsd-signature-type">UploadFile</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/82120be/src/lib/types.ts#L19">lib/types.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/cc4c709/src/lib/types.ts#L23">lib/types.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="folder" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> folder</h3>
+					<div class="tsd-signature tsd-kind-icon">folder<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/82120be/src/lib/types.ts#L18">lib/types.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/cc4c709/src/lib/types.ts#L24">lib/types.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="rename" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> rename</h3>
+					<div class="tsd-signature tsd-kind-icon">rename<span class="tsd-signature-symbol">:</span> <a href="../index.html#renamepolicy" class="tsd-signature-type">RenamePolicy</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/cc4c709/src/lib/types.ts#L25">lib/types.ts:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="share" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> share</h3>
+					<div class="tsd-signature tsd-kind-icon">share<span class="tsd-signature-symbol">:</span> <a href="../index.html#filesharing" class="tsd-signature-type">FileSharing</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/sheetbase/drive/blob/cc4c709/src/lib/types.ts#L26">lib/types.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -136,16 +158,25 @@
 					<li class=" tsd-kind-interface">
 						<a href="sharingconfig.html" class="tsd-kind-icon">Sharing<wbr>Config</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="uploadfile.html" class="tsd-kind-icon">Upload<wbr>File</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface">
 						<a href="uploadresource.html" class="tsd-kind-icon">Upload<wbr>Resource</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="uploadresource.html#base64string" class="tsd-kind-icon">base64<wbr>String</a>
+								<a href="uploadresource.html#file" class="tsd-kind-icon">file</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="uploadresource.html#name" class="tsd-kind-icon">name</a>
+								<a href="uploadresource.html#folder" class="tsd-kind-icon">folder</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="uploadresource.html#rename" class="tsd-kind-icon">rename</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="uploadresource.html#share" class="tsd-kind-icon">share</a>
 							</li>
 						</ul>
 					</li>
