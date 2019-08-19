@@ -175,16 +175,17 @@ describe('DriveService (helpers)', () => {
   beforeEach(before);
   afterEach(after);
 
-  it('#base64StringBreakdown should throw error, malform', () => {
+  it('#base64Parser should throw error, malform', () => {
     expect(
-      Drive.base64StringBreakdown.bind(Drive, 'xxx'),
+      Drive.base64Parser.bind(Drive, 'xxx'),
     ).to.throw('Malform base64 data.');
   });
 
-  it('#base64StringBreakdown', () => {
-    const result = Drive.base64StringBreakdown('data:xxx;base64,Abc=');
+  it('#base64Parser', () => {
+    const result = Drive.base64Parser('data:xxx;base64,Abc=');
     expect(result).to.eql({
       mimeType: 'xxx',
+      size: 2.25,
       base64Body: 'Abc=',
     });
   });

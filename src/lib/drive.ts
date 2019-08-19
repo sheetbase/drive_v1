@@ -170,13 +170,14 @@ export class DriveService {
    * helpers
    */
 
-  base64StringBreakdown(base64String: string) {
-    const [ header, body ] = base64String.split(';base64,');
+  base64Parser(base64Value: string) {
+    const [ header, body ] = base64Value.split(';base64,');
     const mimeType = header.replace('data:', '');
     if (!mimeType || !body) {
       throw new Error('Malform base64 data.');
     }
-    return { mimeType, base64Body: body };
+    const size = body.replace(/\=/g, '').length * 0.75; // bytes
+    return { mimeType, size, base64Body: body };
   }
 
   // check if the file is in the upload folder
@@ -389,13 +390,13 @@ export class DriveService {
 
     // retrieve data
     const { name, base64Value } = fileData;
-    const { mimeType, base64Body } = this.base64StringBreakdown(base64Value);
+    const { mimeType, size, base64Body } = this.base64Parser(base64Value);
 
     // check input file
     if (!this.isValidFileType(mimeType)) {
       throw new Error('file/invalid-type');
     }
-    if (!this.isValidFileSize(base64Body.replace(/\=/g, '').length * 0.75)) {
+    if (!this.isValidFileSize(size)) {
       throw new Error('file/invalid-size');
     }
 
