@@ -1,5 +1,5 @@
 import { AddonRoutesOptions, RoutingErrors, RouteRequest, RouteHandler } from '@sheetbase/server';
-import md5 from 'blueimp-md5/js/md5.min';
+import { md5 } from '../md5/md5';
 
 import {
   Options,
@@ -24,7 +24,7 @@ export class DriveService {
   };
 
   private req: RouteRequest = null;
-  private auth: { uid?: string, email?: string } = null;
+  private auth: any = null;
 
   // for viewing the file only
   // PUBLIC: anyone
@@ -38,7 +38,7 @@ export class DriveService {
 
   constructor(options: Options) {
     this.options = {
-      maxSize: 100,
+      maxSize: 10,
       urlBuilder: ['https://drive.google.com/uc?id='],
       ... options,
     };
@@ -145,13 +145,13 @@ export class DriveService {
    * helpers
    */
 
-  private base64StringBreakdown(base64String: string) {
-    const [ mimeType, base64Content ] = base64String
-      .replace('data:', '').split(';base64,');
-    if (!mimeType || !base64Content) {
+  base64StringBreakdown(base64String: string) {
+    const [ header, body ] = base64String.split(';base64,');
+    const mimeType = header.replace('data:', '');
+    if (!mimeType || !body) {
       throw new Error('Malform base64 data.');
     }
-    return { mimeType, base64Content };
+    return { mimeType, base64Body: body };
   }
 
   // check if the file is in the upload folder
@@ -175,21 +175,20 @@ export class DriveService {
 
   isValidFileType(mimeType: string) {
     const { allowTypes } = this.options;
-    return !allowTypes || allowTypes[mimeType] > -1;
+    return !allowTypes || allowTypes.indexOf(mimeType) > -1;
   }
 
   isValidFileSize(sizeBytes: number) {
     const { maxSize } = this.options;
-    const sizeMB = sizeBytes / 1048576;
-    return !maxSize || sizeMB <= maxSize;
+    const sizeMB = sizeBytes / 1000000;
+    return !maxSize || maxSize === 0 || sizeMB <= maxSize;
   }
 
-  getUploadFolder() {
-    const { uploadFolder } = this.options;
-    return  DriveApp.getFolderById(uploadFolder);
+  getSharingPreset(preset: SharingPreset) {
+    return this.sharingPresets[preset];
   }
 
-  getFileName(fileName: string, rename?: RenamePolicy) {
+  generateFileName(fileName: string, rename?: RenamePolicy) {
     const fileNameArr = fileName.split('.');
     // extract name & extension
     const ext = fileNameArr.pop();
@@ -206,21 +205,21 @@ export class DriveService {
     return name + '.' + ext;
   }
 
-  getSharingPreset(preset: SharingPreset) {
-    return this.sharingPresets[preset];
+  buildFileUrl(id: string) {
+    const { urlBuilder } = this.options;
+    const builder = (urlBuilder instanceof Array) ?
+      (id: string) => (urlBuilder[0] + id +  (urlBuilder[1] || '')) : urlBuilder;
+    return builder(id);
   }
 
   getFileInfo(file: GoogleAppsScript.Drive.File): FileInfo {
-    let { urlBuilder } = this.options;
-    urlBuilder = (urlBuilder instanceof Array) ?
-      (id: string) => (urlBuilder[0] + id +  urlBuilder[1]) : urlBuilder;
     const fileId = file.getId();
     const name = file.getName();
     const mimeType = file.getMimeType();
     const description = file.getDescription();
     const size = file.getSize();
     const link = file.getUrl();
-    const url = urlBuilder(fileId);
+    const url = this.buildFileUrl(fileId);
     return {
       id: fileId,
       name,
@@ -233,7 +232,12 @@ export class DriveService {
     };
   }
 
-  getFolderByName(
+  getUploadFolder() {
+    const { uploadFolder } = this.options;
+    return  DriveApp.getFolderById(uploadFolder);
+  }
+
+  getOrCreateFolderByName(
     name: string,
     parentFolder?: GoogleAppsScript.Drive.Folder,
   ) {
@@ -249,24 +253,22 @@ export class DriveService {
     return folder;
   }
 
-  createFolderByYearAndMonth(
-    parentFolder: GoogleAppsScript.Drive.Folder,
-  ) {
+  createFolderByYearAndMonth(parentFolder?: GoogleAppsScript.Drive.Folder) {
     const date = new Date();
-    const year = '' + date.getFullYear();
-    let month: any = date.getMonth() + 1;
-      month = '' + (month < 10 ? '0' + month : month);
-    const folder = this.getFolderByName(year, parentFolder);
-    return this.getFolderByName(month, folder);
+    const yearStr = '' + date.getFullYear();
+    let monthStr: any = date.getMonth() + 1;
+      monthStr = '' + (monthStr < 10 ? '0' + monthStr : monthStr);
+    const folder = this.getOrCreateFolderByName(yearStr, parentFolder);
+    return this.getOrCreateFolderByName(monthStr, folder);
   }
 
-  createFileFromBase64Content(
+  createFileFromBase64Body(
     parentFolder: GoogleAppsScript.Drive.Folder,
     fileName: string,
     mimeType: string,
-    base64Content: string,
+    base64Body: string,
   ) {
-    const data = Utilities.base64Decode(base64Content, Utilities.Charset.UTF_8);
+    const data = Utilities.base64Decode(base64Body, Utilities.Charset.UTF_8);
     const blob = Utilities.newBlob(data, mimeType, fileName);
     return parentFolder.createFile(blob);
   }
@@ -282,9 +284,14 @@ export class DriveService {
     );
   }
 
-  setEditForAuthUser(file: GoogleAppsScript.Drive.File) {
-    const { uid, email } = this.auth;
-    return file.addEditors([ email, uid + '@sheetbase.app' ]);
+  setEditPermissionForUser(
+    file: GoogleAppsScript.Drive.File,
+    auth: { uid?: string, email?: string },
+  ) {
+    if (!!auth && !!auth.email) {
+      file.addEditors([ auth.email ]);
+    }
+    return file;
   }
 
   /**
@@ -299,12 +306,10 @@ export class DriveService {
   }
 
   hasEditPermission(file: GoogleAppsScript.Drive.File) {
+    const { email } = this.auth || {} as { email?: string };
     return (
-      !!this.auth &&
-      (
-        file.getAccess(this.auth.email) === GoogleAppsScript.Drive.Permission.EDIT ||
-        file.getAccess(this.auth.uid + '@sheetbase.app') === GoogleAppsScript.Drive.Permission.EDIT
-      )
+      !!email &&
+      file.getAccess(email) === GoogleAppsScript.Drive.Permission.EDIT
     );
   }
 
@@ -344,35 +349,33 @@ export class DriveService {
       throw new Error('file/invalid-upload-resource');
     }
 
-    // data
+    // retrieve data
     const { name, base64Data } = uploadResource;
-    const { mimeType, base64Content } = this.base64StringBreakdown(base64Data);
+    const { mimeType, base64Body } = this.base64StringBreakdown(base64Data);
 
     // check input file
     if (!this.isValidFileType(mimeType)) {
       throw new Error('file/invalid-type');
     }
-    if (!this.isValidFileSize(base64Content.replace(/\=/g, '').length * 0.75)) {
+    if (!this.isValidFileSize(base64Body.replace(/\=/g, '').length * 0.75)) {
       throw new Error('file/invalid-size');
     }
 
     // get the upload folder
     let folder = this.getUploadFolder();
     if (customFolder) {
-      folder = this.getFolderByName(customFolder, folder);
+      folder = this.getOrCreateFolderByName(customFolder, folder);
     } else if (!!this.options.nested) {
       folder = this.createFolderByYearAndMonth(folder);
     }
 
     // save the file
-    const fileName = this.getFileName(name, renamePolicy);
-    const file = this.createFileFromBase64Content(folder, fileName, mimeType, base64Content);
+    const fileName = this.generateFileName(name, renamePolicy);
+    const file = this.createFileFromBase64Body(folder, fileName, mimeType, base64Body);
     // set sharing
     this.setFileSharing(file, sharing);
     // set edit security
-    if (!!this.auth) {
-      this.setEditForAuthUser(file);
-    }
+    this.setEditPermissionForUser(file, this.auth);
 
     // return
     return file;

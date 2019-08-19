@@ -23,7 +23,8 @@
    },
    "nyc": {
       "exclude": [
-         "**/tests"
+         "**/tests",
+         "**/src/md5"
       ]
    },
    "keywords": [
@@ -39,9 +40,7 @@
    "bugs": {
       "url": "https://github.com/sheetbase/drive/issues"
    },
-   "dependencies": {
-      "blueimp-md5": "^2.11.1"
-   },
+   "dependencies": {},
    "peerDependencies": {
       "@sheetbase/server": "^1.1.0"
    },

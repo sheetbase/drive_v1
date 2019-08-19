@@ -1,11 +1,11 @@
 export interface Options extends Intergration {
   // the upload folder id
   uploadFolder: string;
-  // nest in year & month folder
-  nested?: boolean;
   // limits
   allowTypes?: string[]; // mimetype list
-  maxSize?: number; // MB
+  maxSize?: number; // MB = 1,000,000 bytes
+  // structured by: <year>/<month>
+  nested?: boolean;
   // customize the response url
   urlBuilder?: string[] | {(id: string): string};
 }
