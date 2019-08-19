@@ -309,7 +309,7 @@ export class DriveService {
     const { email } = this.auth || {} as { email?: string };
     return (
       !!email &&
-      file.getAccess(email) === GoogleAppsScript.Drive.Permission.EDIT
+      file.getAccess(email) === DriveApp.Permission.EDIT
     );
   }
 

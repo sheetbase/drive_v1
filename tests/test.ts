@@ -6,8 +6,13 @@ import { drive, DriveService } from '../src/public_api';
 
 let Drive: DriveService;
 
+let isFileSharedStub: sinon.SinonStub;
+let getFileInfoStub: sinon.SinonStub;
 let getUploadFolderStub: sinon.SinonStub;
 let getOrCreateFolderByNameStub: sinon.SinonStub;
+let hasViewPermissionStub: sinon.SinonStub;
+let hasEditPermissionStub: sinon.SinonStub;
+let getFileByIdStub: sinon.SinonStub;
 
 function before() {
 
@@ -20,6 +25,7 @@ function before() {
     },
     Permission: {
       VIEW: 'VIEW',
+      EDIT: 'EDIT',
       NONE: 'NONE',
     },
   };
@@ -36,21 +42,31 @@ function before() {
   Drive = drive({ uploadFolder: 'xxx' });
 
   // build stubs
+  isFileSharedStub = sinon.stub(Drive, 'isFileShared');
+  getFileInfoStub = sinon.stub(Drive, 'getFileInfo');
   getUploadFolderStub = sinon.stub(Drive, 'getUploadFolder');
   getOrCreateFolderByNameStub = sinon.stub(Drive, 'getOrCreateFolderByName');
+  hasViewPermissionStub = sinon.stub(Drive, 'hasViewPermission');
+  hasEditPermissionStub = sinon.stub(Drive, 'hasEditPermission');
+  getFileByIdStub = sinon.stub(Drive, 'getFileById');
 
 }
 
 function after() {
+  isFileSharedStub.restore();
+  getFileInfoStub.restore();
   getUploadFolderStub.restore();
   getOrCreateFolderByNameStub.restore();
+  hasViewPermissionStub.restore();
+  hasEditPermissionStub.restore();
+  getFileByIdStub.restore();
 }
 
 /**
  * test start
  */
 
-describe('Drive test', () => {
+describe('DriveService (instance)', () => {
 
   beforeEach(before);
   afterEach(after);
@@ -58,13 +74,6 @@ describe('Drive test', () => {
   it('Drive service should be created', () => {
     expect(!!Drive).to.equal(true);
   });
-
-});
-
-describe('DriveService', () => {
-
-  beforeEach(before);
-  afterEach(after);
 
   it('should have default values', () => {
     // @ts-ignore
@@ -120,6 +129,13 @@ describe('DriveService', () => {
     expect(Drive.auth).to.eql({ uid: 'xxx' });
   });
 
+});
+
+describe('DriveService (helpers)', () => {
+
+  beforeEach(before);
+  afterEach(after);
+
   it('#base64StringBreakdown should throw error, malform', () => {
     expect(
       Drive.base64StringBreakdown.bind(Drive, 'xxx'),
@@ -167,6 +183,8 @@ describe('DriveService', () => {
   });
 
   it('#isFileShared (not)', () => {
+    isFileSharedStub.restore();
+
     const result = Drive.isFileShared({
       getSharingAccess: () => 'NONE',
     } as any);
@@ -174,6 +192,8 @@ describe('DriveService', () => {
   });
 
   it('#isFileShared', () => {
+    isFileSharedStub.restore();
+
     const result1 = Drive.isFileShared({
       getSharingAccess: () => 'ANYONE',
     } as any);
@@ -270,6 +290,8 @@ describe('DriveService', () => {
   });
 
   it('#getFileInfo', () => {
+    getFileInfoStub.restore();
+
     const result = Drive.getFileInfo({
       getId: () => 'file-xxx',
       getName: () => 'The file',
@@ -439,6 +461,137 @@ describe('DriveService', () => {
     expect(result['editors']).to.eql([
       'xxx@gmail.com',
     ]);
+  });
+
+});
+
+describe('DriveService (security)', () => {
+
+  beforeEach(before);
+  afterEach(after);
+
+  it('#hasEditPermission (no auth)', () => {
+    hasEditPermissionStub.restore();
+
+    const result = Drive.hasEditPermission({
+      getAccess: email => 'EDIT',
+    } as any);
+    expect(result).to.equal(false);
+  });
+
+  it('#hasEditPermission (no email)', () => {
+    hasEditPermissionStub.restore();
+
+    // @ts-ignore
+    Drive.auth = { uid: 'xxx' };
+    const result = Drive.hasEditPermission({
+      getAccess: email => 'EDIT',
+    } as any);
+    expect(result).to.equal(false);
+  });
+
+  it('#hasEditPermission (no permission)', () => {
+    hasEditPermissionStub.restore();
+
+    // @ts-ignore
+    Drive.auth = { uid: 'xxx', email: 'xxx@gmail.com' };
+    const result = Drive.hasEditPermission({
+      getAccess: email => 'VIEW',
+    } as any);
+    expect(result).to.equal(false);
+  });
+
+  it('#hasEditPermission (has permission)', () => {
+    hasEditPermissionStub.restore();
+
+    // @ts-ignore
+    Drive.auth = { uid: 'xxx', email: 'xxx@gmail.com' };
+    const result = Drive.hasEditPermission({
+      getAccess: email => 'EDIT',
+    } as any);
+    expect(result).to.equal(true);
+  });
+
+  it('#hasViewPermission (no permission)', () => {
+    hasViewPermissionStub.restore();
+
+    isFileSharedStub.returns(false);
+    hasEditPermissionStub.returns(false);
+
+    const result = Drive.hasViewPermission(null);
+    expect(result).to.equal(false);
+  });
+
+  it('#hasViewPermission (public)', () => {
+    hasViewPermissionStub.restore();
+
+    isFileSharedStub.returns(true);
+    hasEditPermissionStub.returns(false);
+
+    const result = Drive.hasViewPermission(null);
+    expect(result).to.equal(true);
+  });
+
+  it('#hasViewPermission (has edit permission)', () => {
+    hasViewPermissionStub.restore();
+
+    isFileSharedStub.returns(false);
+    hasEditPermissionStub.returns(true);
+
+    const result = Drive.hasViewPermission(null);
+    expect(result).to.equal(true);
+  });
+
+});
+
+describe('DriveService (main)', () => {
+
+  beforeEach(before);
+  afterEach(after);
+
+  it('#getFileById (item in trash)', () => {
+    getFileByIdStub.restore();
+
+    hasViewPermissionStub.returns(true);
+    global['DriveApp'].getFileById = () => ({
+      isTrashed: () => true,
+    });
+
+    expect(
+      Drive.getFileById.bind(Drive, 'xxx'),
+    ).to.throws('file/no-file');
+  });
+
+  it('#getFileById (no view permission)', () => {
+    getFileByIdStub.restore();
+
+    hasViewPermissionStub.returns(false);
+    global['DriveApp'].getFileById = () => ({
+      isTrashed: () => false,
+    });
+
+    expect(
+      Drive.getFileById.bind(Drive, 'xxx'),
+    ).to.throws('file/no-file');
+  });
+
+  it('#getFileById', () => {
+    getFileByIdStub.restore();
+
+    hasViewPermissionStub.returns(true);
+    global['DriveApp'].getFileById = id => ({
+      isTrashed: () => false,
+      id,
+    });
+
+    const result = Drive.getFileById('xxx');
+    expect(result['id']).to.equal('xxx');
+  });
+
+  it('#getFileInfoById', () => {
+    getFileInfoStub.returns(true as any);
+    const result = Drive.getFileInfoById('xxx');
+    expect(result).to.equal(true);
   });
 
 });
