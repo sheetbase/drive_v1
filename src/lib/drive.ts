@@ -180,8 +180,7 @@ export class DriveService {
     return { mimeType, size, base64Body: body };
   }
 
-  // check if the file is in the upload folder
-  isFileAvailable(file: GoogleAppsScript.Drive.File): boolean {
+  isFileInsideUploadFolder(file: GoogleAppsScript.Drive.File): boolean {
     const parentIds: string[] = [];
     const parents = file.getParents();
     while (parents.hasNext()) {
@@ -190,7 +189,6 @@ export class DriveService {
     return (parentIds.indexOf(this.options.uploadFolder) > -1);
   }
 
-  // check if the file is shared publicly
   isFileShared(file: GoogleAppsScript.Drive.File): boolean {
     const access = file.getSharingAccess();
     return (

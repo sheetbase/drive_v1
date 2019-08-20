@@ -190,9 +190,9 @@ describe('DriveService (helpers)', () => {
     });
   });
 
-  it('#isFileAvailable (not)', () => {
+  it('#isFileInsideUploadFolder (not)', () => {
     const parents = ['abc', '123']; // no 'xxx'
-    const result = Drive.isFileAvailable({
+    const result = Drive.isFileInsideUploadFolder({
       getParents: () => ({
         hasNext: () => !!parents.length,
         next: () => {
@@ -206,9 +206,9 @@ describe('DriveService (helpers)', () => {
     expect(result).to.equal(false);
   });
 
-  it('#isFileAvailable', () => {
+  it('#isFileInsideUploadFolder', () => {
     const parents = ['abc', 'xxx'];
-    const result = Drive.isFileAvailable({
+    const result = Drive.isFileInsideUploadFolder({
       getParents: () => ({
         hasNext: () => !!parents.length,
         next: () => {
